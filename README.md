@@ -6,13 +6,14 @@ Let's go through the workflow using a concrete example. Alice who is located in 
 Setup:
 1. We have an account with crypto exchange supported in Russia with 0xabc Ethereum address
 2. We have an account with crypto exchange supported in US with 0xdef Ethereum address
+3. An owner of the smart contract can do CRUD operations country -> address mappings.
 
 Actual workflow:
 1. Alice goes in the web UI and submits a request to transfer $500 to Bob. She needs to specify Bob's country and contact information (e.g. email, phone number, payment credentials)
 2. Alice signs a transaction through her MetaMask account to transfer $500 to 0xabc (address belongs to Crypto Union dapp).
 3. The $500 get converted into ~500 USDT (it will not bee 500 USDT precisely as we need to account for gas fees).
-4. We send the ~500 USDT to an address that belongs to a crypto exchange in the US, a.k.a 0xdef account.
-5. We cash out the $500 on the US exchange to Bob's bank account (we will leave as a manual process for now).
+4. The smart contract sends the ~500 USDT to an address that belongs to a crypto exchange in the US, a.k.a 0xdef account.
+5. We cash out the $500 on the US exchange to Bob's bank account (we will leave this as a manual process for now).
 6. A person transferring the funds out of the exchange account will update the status of the transfer in the smart contract and send Alice some confirmation of transfer to Bob.  
 
 Note, that all transactions and status updates will be recorded on the blockchain so Alice and Bob can be sure that their money did not get lost along the way.
