@@ -1,15 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.4.21 <0.7.0;
 
-
 contract SimpleStorage {
-    uint storedData;
+    uint256 storedData;
 
-    function set(uint x) public {
+    function set(uint256 x) public {
         storedData = x;
     }
 
-    function get() public view returns (uint) {
+    function get() public view returns (uint256) {
         return storedData;
     }
 }
