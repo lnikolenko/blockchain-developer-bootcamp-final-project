@@ -9,15 +9,15 @@ contract CryptoUnion {
     uint256 public transferCount = 0;
 
     //the initator needs to send > minValue for the transaction to go through
-    uint256 public minValue = 0;
+    uint256 public minValue = 2e17;
 
     //contry code (3 chars max) -> address mapping
-    mapping(bytes4 => address) public addresses;
+    mapping(string => address) public addresses;
 
     //wallet address -> count of pending transfers mapping
     mapping(address => uint256) public pendingTransfers;
 
-    // transfer uuid -> Transfer mapping
+    // transfer id -> Transfer mapping
     mapping(uint256 => Transfer) public transfers;
 
     // enum State
@@ -44,7 +44,7 @@ contract CryptoUnion {
     struct Transfer {
         uint256 transferId;
         address payable from;
-        bytes4 to; //country code of the recepient
+        string to; //country code of the recepient
         Status status;
         uint256 amount;
     }
@@ -53,20 +53,23 @@ contract CryptoUnion {
      * Events
      */
     // <LogForSale event: sku arg>
-    event LogCountryUpdated(
-        bytes4 countryCode,
+    event LogCountryAddressUpdated(
+        string countryCode,
         address oldWallet,
         address newWallet
     );
-
-    // <LogSold event: sku arg>
-    event LogGetAddress(bytes4 countryCode, address wallet);
 
     /*
      * Modifiers
      */
     modifier isOwner() {
         require(msg.sender == owner, "Owner required!");
+        _;
+    }
+
+    modifier validCountryCode(string memory countrycode) {
+        bytes memory tempEmptyStringTest = bytes(countrycode);
+        require(tempEmptyStringTest.length == 3, "Invalid country code!");
         _;
     }
 
@@ -88,21 +91,30 @@ contract CryptoUnion {
         _;
     }
 
-    function setAddress(bytes4 countryCode, address wallet)
-        public
-        isOwner
-        noPendingTransfers(countryCode)
-    {
-        revert("Not implemented!");
+    function adminSignIn() public view returns (bool) {
+        if (msg.sender == owner) {
+            return true;
+        }
+        return false;
     }
 
-    function getAddress(bytes4 countryCode, address wallet)
+    function setAddress(string memory countryCode, address wallet)
+        public
+        isOwner
+        validCountryCode(countryCode)
+    {
+        address oldWallet = addresses[countryCode];
+        addresses[countryCode] = wallet;
+        emit LogCountryAddressUpdated(countryCode, oldWallet, wallet);
+    }
+
+    function getAddress(string memory countryCode)
         public
         view
+        validCountryCode(countryCode)
         returns (address)
     {
-        revert("Not implemented!");
-        return address(0);
+        return addresses[countryCode];
     }
 
     function setMinValue(uint256 _minValue) public isOwner {
@@ -113,20 +125,45 @@ contract CryptoUnion {
         revert("Not implemented!");
     }
 
-    function sendEthToCountry(bytes4 countryCode) public payable paidEnough {
+    function sendEthToCountry(string memory countryCode)
+        public
+        payable
+        paidEnough
+        validCountryCode(countryCode)
+    {
         // Here are the approximate steps:
         // 1. Create a transfer - need to figure out how much the contract should charge for the service
+        if (addresses[countryCode] == address(0)) {
+            revert("Invalid address");
+            return;
+        }
+        uint256 amount = msg.value - minValue;
+        transfers[transferCount] = Transfer(
+            transferCount,
+            msg.sender,
+            countryCode,
+            Status.Initiated,
+            amount
+        );
         // 2. Try to send money to addresses[countryCode]
+        (bool sent, ) = addresses[countryCode].call.value(amount)("");
+        require(sent, "Failed to send Ether");
         // 3. If success, change the status to Sent
+        transfers[transferCount].status = Status.Sent;
+        transferCount += 1;
         // 4. If fail, refund the money to the sender (minus the contract fees) and change the status to Refunded
-        revert("Not implemented!");
+        //revert("Not implemented!");
     }
 
     function refundEth(address sender) public returns (bool) {
         revert("Not implemented!");
     }
 
-    function sendToCountry(bytes4 countryCode) public payable paidEnough {
+    function sendToCountry(string memory countryCode)
+        public
+        payable
+        paidEnough
+    {
         // Similar steps to sendEthToCountry() but with USDT
         revert("Not implemented!");
     }

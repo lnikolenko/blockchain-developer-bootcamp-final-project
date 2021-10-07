@@ -1,6 +1,6 @@
 import React from "react";
 import { useHistory, useLocation } from "react-router-dom";
-import { useAuth } from "../../auth";
+import { useAuth } from "../../providers/auth";
 import { AuthButton } from "../../components/auth";
 
 export default function Login() {

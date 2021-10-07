@@ -1,16 +1,18 @@
 import React, { Component } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import { ProvideAuth, PrivateRoute } from "./auth";
-import SimpleStorage from "./screens/simple_storage";
-import Home from "./screens/home";
-import Login from "./screens/login";
-import Admin from "./screens/admin";
-
+import { ProvideAuth, PrivateRoute } from "./providers/auth";
+import { ProvideWeb3 } from "./providers/web3";
+import SimpleStorage from "./screens/SimpleStorage";
+import Home from "./screens/Home";
+import Login from "./screens/Login";
+import Admin from "./screens/Admin";
+import Metamask from "./screens/Metamask";
 import "./App.css";
+import "antd/dist/antd.css";
 
-class App extends Component {
-  render() {
-    return (
+function App() {
+  return (
+    <ProvideWeb3>
       <ProvideAuth>
         <Router>
           <div>
@@ -24,6 +26,9 @@ class App extends Component {
               <Route path="/login">
                 <Login />
               </Route>
+              <Route path="/metamask">
+                <Metamask />
+              </Route>
               <PrivateRoute path="/admin">
                 <Admin />
               </PrivateRoute>
@@ -34,8 +39,8 @@ class App extends Component {
           </div>
         </Router>
       </ProvideAuth>
-    );
-  }
+    </ProvideWeb3>
+  );
 }
 
 export default App;

@@ -1,6 +1,6 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
-import { useAuth } from "../../auth";
+import { useAuth } from "../../providers/auth";
 
 export default function AuthButton() {
   let history = useHistory();
