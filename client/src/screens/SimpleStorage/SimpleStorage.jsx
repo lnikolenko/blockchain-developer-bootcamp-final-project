@@ -3,6 +3,7 @@ import { useWeb3 } from "../../providers/web3/getWeb3";
 import { Button, message } from "antd";
 import MetaMaskModal from "../../components/MetaMaskModal";
 import CountryPanel from "./CountryPanel";
+import TransferPanel from "./TransferPanel";
 
 function SimpleStorage() {
   const web3 = useWeb3();
@@ -46,7 +47,7 @@ function SimpleStorage() {
         //user explicitly denied access
         message.error("Please confirm the transaction in Metamask!");
       } else {
-        message.error("Something went wrong, try regreshing the page");
+        message.error("Something went wrong, try refreshing the page");
         console.log(e);
       }
     }
@@ -66,7 +67,11 @@ function SimpleStorage() {
             Sign In
           </Button>
         ) : (
-          <CountryPanel />
+          <div>
+            <CountryPanel />
+            <br />
+            <TransferPanel />
+          </div>
         )}
       </div>
     </div>
