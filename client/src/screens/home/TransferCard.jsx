@@ -5,30 +5,42 @@ import confirmationModal from "./ConfirmationModal";
 
 function TransferCard() {
   let [transferId, setTransferId] = useState("");
-  const { connectToMetaMask, contract, accounts } = useWeb3();
-  let [refreshedAccounts, setRefreshedAccounts] = useState(false);
+  const { web3, connectToMetaMask } = useWeb3();
+  let [refreshedAccounts, setRefreshedAccounts] = useState({
+    refreshed: false,
+    cb: null,
+  });
   let [loading, setLoading] = useState(false);
   const handleClick = async () => {
     setLoading(true);
-    setRefreshedAccounts(false);
+    setRefreshedAccounts({
+      refreshed: false,
+      cb: null,
+    });
     try {
       await connectToMetaMask();
-      setRefreshedAccounts(true);
+      setRefreshedAccounts({
+        refreshed: true,
+        cb: sendEthToCountry,
+      });
     } catch (e) {
       setLoading(false);
-      setRefreshedAccounts(false);
+      setRefreshedAccounts({
+        refreshed: false,
+        cb: null,
+      });
       message.error("Please allow access!");
     }
   };
 
   useEffect(() => {
-    if (!refreshedAccounts) {
+    if (!refreshedAccounts.refreshed || !web3) {
       return;
     }
-    sendEthToCountry();
-  }, [refreshedAccounts]);
+    refreshedAccounts.cb(web3.contract);
+  }, [refreshedAccounts, web3]);
 
-  const sendEthToCountry = async () => {
+  const sendEthToCountry = async (contract) => {
     try {
       const result = await contract.methods.getTransfer(transferId).call();
       console.log(result);
@@ -45,7 +57,7 @@ function TransferCard() {
       setLoading(false);
     } catch (e) {
       setLoading(false);
-      if (e.code == 4001) {
+      if (e.code === 4001) {
         //user explicitly denied access
         message.error("Please confirm the transaction in Metamask!");
       } else if (e.message.includes("Transfer does not exist")) {

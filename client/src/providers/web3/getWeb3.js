@@ -1,4 +1,4 @@
-import React, { useContext, createContext, useState, useEffect } from "react";
+import React, { useContext, createContext, useState } from "react";
 //import SimpleStorageContract from "../../contracts/SimpleStorage.json";
 import CryptoUnionContract from "../../contracts/CryptoUnion.json";
 import Web3 from "web3";
@@ -50,17 +50,19 @@ export const getWeb3 = async () =>
 
 function useProvideWeb3() {
   let [web3, setWeb3] = useState(null);
+  /*
   let [accounts, setAccounts] = useState(null);
   let [networkId, setNetworkId] = useState(null);
   let [deployedNetwork, setDeployedNetwork] = useState(null);
   let [contract, setContract] = useState(null);
+  */
 
   const connectToMetaMask = async () => {
     try {
       let w3;
       if (!web3) {
         w3 = await getWeb3();
-        setWeb3(w3);
+        //setWeb3(w3);
       } else {
         w3 = web3;
       }
@@ -68,20 +70,28 @@ function useProvideWeb3() {
         await window.ethereum.enable();
       }
       // Use web3 to get the user's accounts.
-      setAccounts(await w3.eth.getAccounts());
+      if (w3.eth) {
+        const accounts = await w3.eth.getAccounts();
+        //setAccounts(await w3.eth.getAccounts());
 
-      // Get the contract instance.
-      const netId = await w3.eth.net.getId();
-      setNetworkId(netId);
+        // Get the contract instance.
+        const netId = await w3.eth.net.getId();
+        //setNetworkId(netId);
 
-      const deployedNet = CryptoUnionContract.networks[netId];
-      setDeployedNetwork(deployedNet);
-      setContract(
-        new w3.eth.Contract(
+        const deployedNet = CryptoUnionContract.networks[netId];
+        //setDeployedNetwork(deployedNet);
+        const contract = new w3.eth.Contract(
           CryptoUnionContract.abi,
           deployedNet && deployedNet.address
-        )
-      );
+        );
+        setWeb3({
+          web3: w3,
+          accounts,
+          networkId: netId,
+          deployedNetwork: deployedNet,
+          contract: contract,
+        });
+      }
 
       // Set web3, accounts, and contract to the state, and then proceed with an
       // example of interacting with the contract's methods.
@@ -109,9 +119,9 @@ function useProvideWeb3() {
     checkMetaMaskInstallation,
     connectToMetaMask,
     web3,
-    accounts,
-    networkId,
-    deployedNetwork,
-    contract,
+    //accounts,
+    //networkId,
+    //deployedNetwork,
+    //contract,
   };
 }

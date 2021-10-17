@@ -169,6 +169,7 @@ contract CryptoUnion is Ownable {
                 amount
             );
         }
+        // defending afainst https://swcregistry.io/docs/SWC-104
         require(sent, "Failed to send Ether");
         // 3. If success, change the status to Sent
         emit LogTransferSent(

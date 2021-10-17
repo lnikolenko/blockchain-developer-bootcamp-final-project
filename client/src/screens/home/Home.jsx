@@ -1,13 +1,21 @@
 import React from "react";
+import MetaMaskModal from "../../components/MetaMaskModal";
 import SendCard from "./SendCard";
 import TransferCard from "./TransferCard";
+import { useWeb3 } from "../../providers/web3/getWeb3";
 
 function Home() {
+  const { checkMetaMaskInstallation } = useWeb3();
   return (
-    <div style={{ padding: "5%" }}>
-      <SendCard />
-      <br />
-      <TransferCard />
+    <div>
+      <MetaMaskModal
+        visible={checkMetaMaskInstallation && !checkMetaMaskInstallation()}
+      />
+      <div style={{ padding: "5%" }}>
+        <SendCard />
+        <br />
+        <TransferCard />
+      </div>
     </div>
   );
 }

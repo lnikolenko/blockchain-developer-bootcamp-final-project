@@ -3,44 +3,56 @@ import { useWeb3 } from "../../providers/web3/getWeb3";
 import { Form, InputNumber, Button, Card, message } from "antd";
 
 function TransferPanel() {
-  const web3 = useWeb3();
-  let [refreshedAccounts, setRefreshedAccounts] = useState(null);
+  const { web3, connectToMetaMask } = useWeb3();
+  let [refreshedAccounts, setRefreshedAccounts] = useState({
+    refreshed: false,
+    cb: null,
+  });
   let [loading, setLoading] = useState(false);
   let [transferId, setTransferId] = useState("");
 
   const handleClick = async () => {
     setLoading(true);
-    setRefreshedAccounts(false);
+    setRefreshedAccounts({
+      refreshed: false,
+      cb: null,
+    });
     try {
-      await web3.connectToMetaMask();
-      setRefreshedAccounts(true);
+      await connectToMetaMask();
+      setRefreshedAccounts({
+        refreshed: true,
+        cb: confirmTransfer,
+      });
     } catch (e) {
       setLoading(false);
-      setRefreshedAccounts(false);
+      setRefreshedAccounts({
+        refreshed: false,
+        cb: null,
+      });
       message.error("Please allow access!");
     }
   };
   useEffect(() => {
-    if (!refreshedAccounts) {
+    if (!refreshedAccounts.refreshed || !web3) {
       return;
     }
-    confirmTransfer();
-  }, [refreshedAccounts]);
+    refreshedAccounts.cb(web3.contract, web3.accounts);
+  }, [refreshedAccounts, web3]);
 
-  const confirmTransfer = async () => {
+  const confirmTransfer = async (contract, accounts) => {
     try {
-      await web3.contract.methods
+      await contract.methods
         .confirmTransfer(transferId)
-        .send({ from: web3.accounts[0] });
+        .send({ from: accounts[0] });
       setLoading(false);
       message.success("Success!");
     } catch (e) {
       setLoading(false);
-      if (e.code == 4001) {
+      if (e.code === 4001) {
         //user explicitly denied access
         message.error("Please confirm the transaction in Metamask!");
       } else {
-        message.error(`Got ${e.message.data}`);
+        message.error(`Got ${e.message}`);
         console.log(e);
       }
     }

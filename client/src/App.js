@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { ProvideAuth, PrivateRoute } from "./providers/auth";
 import { ProvideWeb3 } from "./providers/web3";
@@ -6,7 +6,6 @@ import SimpleStorage from "./screens/SimpleStorage";
 import Home from "./screens/Home";
 import Login from "./screens/Login";
 import Admin from "./screens/Admin";
-import Metamask from "./screens/Metamask";
 import "./App.css";
 import "antd/dist/antd.css";
 
@@ -25,9 +24,6 @@ function App() {
               </Route>
               <Route path="/login">
                 <Login />
-              </Route>
-              <Route path="/metamask">
-                <Metamask />
               </Route>
               <PrivateRoute path="/admin">
                 <Admin />

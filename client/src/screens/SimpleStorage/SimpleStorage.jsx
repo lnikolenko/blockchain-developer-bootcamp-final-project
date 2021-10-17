@@ -6,34 +6,47 @@ import CountryPanel from "./CountryPanel";
 import TransferPanel from "./TransferPanel";
 
 function SimpleStorage() {
-  const web3 = useWeb3();
-  let [refreshedAccounts, setRefreshedAccounts] = useState(false);
+  const { web3, connectToMetaMask, checkMetaMaskInstallation } = useWeb3();
+  let [refreshedAccounts, setRefreshedAccounts] = useState({
+    refreshed: false,
+    cb: null,
+  });
   let [loading, setLoading] = useState(false);
   let [signedIn, setSignedIn] = useState(false);
   const handleClick = async () => {
     setLoading(true);
-    setRefreshedAccounts(false);
+    setRefreshedAccounts({
+      refreshed: false,
+      cb: null,
+    });
     try {
-      await web3.connectToMetaMask();
-      setRefreshedAccounts(true);
+      await connectToMetaMask();
+      setRefreshedAccounts({
+        refreshed: true,
+        cb: adminSignIn,
+      });
     } catch (e) {
       setLoading(false);
-      setRefreshedAccounts(false);
+      setRefreshedAccounts({
+        refreshed: false,
+        cb: null,
+      });
       message.error("Please allow access!");
     }
   };
   useEffect(() => {
-    if (!refreshedAccounts) {
+    if (!refreshedAccounts.refreshed || !web3) {
       return;
     }
-    adminSignIn();
-  }, [refreshedAccounts]);
 
-  const adminSignIn = async () => {
+    refreshedAccounts.cb(web3.contract, web3.accounts);
+  }, [web3, refreshedAccounts]);
+
+  const adminSignIn = async (contract, accounts) => {
     try {
-      const response = await web3.contract.methods
+      const response = await contract.methods
         .adminSignIn()
-        .call({ from: web3.accounts[0] });
+        .call({ from: accounts[0] });
       console.log(response);
       setLoading(false);
       if (response) {
@@ -55,7 +68,9 @@ function SimpleStorage() {
 
   return (
     <div>
-      <MetaMaskModal visible={!web3.checkMetaMaskInstallation()} />
+      <MetaMaskModal
+        visible={checkMetaMaskInstallation && !checkMetaMaskInstallation()}
+      />
       <div style={{ padding: "5%" }}>
         {!signedIn ? (
           <Button

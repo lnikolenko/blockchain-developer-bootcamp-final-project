@@ -6,30 +6,43 @@ import confirmationModal from "./ConfirmationModal";
 function SendCard() {
   let [countryCode, setCountryCode] = useState("");
   let [amount, setAmount] = useState("");
-  const { connectToMetaMask, contract, accounts } = useWeb3();
-  let [refreshedAccounts, setRefreshedAccounts] = useState(false);
+  const { web3, connectToMetaMask } = useWeb3();
+  let [refreshedAccounts, setRefreshedAccounts] = useState({
+    refreshed: false,
+    cb: null,
+  });
   let [loading, setLoading] = useState(false);
   const handleClick = async () => {
     setLoading(true);
-    setRefreshedAccounts(false);
+    setRefreshedAccounts({
+      refreshed: false,
+      cb: null,
+    });
     try {
       await connectToMetaMask();
-      setRefreshedAccounts(true);
+      setRefreshedAccounts({
+        refreshed: true,
+        cb: sendEthToCountry,
+      });
     } catch (e) {
       setLoading(false);
-      setRefreshedAccounts(false);
+      setRefreshedAccounts({
+        refreshed: false,
+        cb: null,
+      });
       message.error("Please allow access!");
     }
   };
 
   useEffect(() => {
-    if (!refreshedAccounts) {
+    if (!refreshedAccounts.refreshed || !web3) {
       return;
     }
-    sendEthToCountry();
-  }, [refreshedAccounts]);
 
-  const sendEthToCountry = async () => {
+    refreshedAccounts.cb(web3.contract, web3.accounts);
+  }, [refreshedAccounts, web3]);
+
+  const sendEthToCountry = async (contract, accounts) => {
     try {
       const amountWei = amount * 1e18;
       const result = await contract.methods
@@ -49,7 +62,7 @@ function SendCard() {
       setLoading(false);
     } catch (e) {
       setLoading(false);
-      if (e.code == 4001) {
+      if (e.code === 4001) {
         //user explicitly denied access
         message.error("Please confirm the transaction in Metamask!");
       } else {

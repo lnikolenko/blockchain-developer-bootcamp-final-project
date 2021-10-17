@@ -9,7 +9,7 @@ function CountryPanel() {
   let [retrivedCountryCode, setRetrivedCountryCode] = useState("");
   let [retrivedAddress, setRetrivedAddress] = useState("");
   let [address, setAddress] = useState("");
-  const web3 = useWeb3();
+  const { web3, connectToMetaMask } = useWeb3();
   let [refreshedAccounts, setRefreshedAccounts] = useState({
     refreshed: false,
     cb: null,
@@ -24,7 +24,7 @@ function CountryPanel() {
       cb: null,
     });
     try {
-      await web3.connectToMetaMask();
+      await connectToMetaMask();
       setRefreshedAccounts({
         refreshed: true,
         cb: getAddressContract,
@@ -46,7 +46,7 @@ function CountryPanel() {
       cb: null,
     });
     try {
-      await web3.connectToMetaMask();
+      await connectToMetaMask();
       setRefreshedAccounts({
         refreshed: true,
         cb: setAddressContract,
@@ -62,22 +62,22 @@ function CountryPanel() {
   };
 
   useEffect(() => {
-    if (!refreshedAccounts.refreshed) {
+    if (!refreshedAccounts.refreshed || !web3) {
       return;
     }
-    refreshedAccounts.cb();
-  }, [refreshedAccounts]);
+    refreshedAccounts.cb(web3.contract, web3.accounts);
+  }, [refreshedAccounts, web3]);
 
-  const setAddressContract = async () => {
+  const setAddressContract = async (contract, accounts) => {
     try {
-      await web3.contract.methods
+      await contract.methods
         .setAddress(countryCode, address)
-        .send({ from: web3.accounts[0] });
+        .send({ from: accounts[0] });
       setLoadingSet(false);
       message.success("Success!");
     } catch (e) {
       setLoadingSet(false);
-      if (e.code == 4001) {
+      if (e.code === 4001) {
         //user explicitly denied access
         message.error("Please confirm the transaction in Metamask!");
       } else {
@@ -87,11 +87,11 @@ function CountryPanel() {
     }
   };
 
-  const getAddressContract = async () => {
+  const getAddressContract = async (contract, accounts) => {
     try {
-      const response = await web3.contract.methods
+      const response = await contract.methods
         .getAddress(retrivedCountryCode)
-        .call({ from: web3.accounts[0] });
+        .call({ from: accounts[0] });
       setLoadingGet(false);
       setRetrivedAddress(response);
       message.success("Success!");
