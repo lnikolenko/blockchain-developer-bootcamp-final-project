@@ -1,5 +1,4 @@
 import React, { useContext, createContext, useState } from "react";
-//import SimpleStorageContract from "../../contracts/SimpleStorage.json";
 import CryptoUnionContract from "../../contracts/CryptoUnion.json";
 import Web3 from "web3";
 
@@ -10,8 +9,10 @@ export function useWeb3() {
 }
 
 export function ProvideWeb3({ children }) {
-  const web3 = useProvideWeb3();
-  return <web3Context.Provider value={web3}>{children}</web3Context.Provider>;
+  const web3Hook = useProvideWeb3();
+  return (
+    <web3Context.Provider value={web3Hook}>{children}</web3Context.Provider>
+  );
 }
 
 export const getWeb3 = async () =>
@@ -84,12 +85,20 @@ function useProvideWeb3() {
           CryptoUnionContract.abi,
           deployedNet && deployedNet.address
         );
+        let paused;
+        if (!web3) {
+          paused = await contract.methods.paused().call({ from: accounts[0] });
+        } else {
+          paused = web3.paused;
+        }
+
         setWeb3({
           web3: w3,
           accounts,
           networkId: netId,
           deployedNetwork: deployedNet,
           contract: contract,
+          paused: paused,
         });
       }
 

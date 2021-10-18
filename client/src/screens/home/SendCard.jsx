@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { useWeb3 } from "../../providers/web3/getWeb3";
+import { useWeb3 } from "../../hooks/web3";
 import { Form, Input, Button, Card, message, InputNumber, Alert } from "antd";
 import confirmationModal from "./ConfirmationModal";
+import PausedModal from "../../components/PausedModal";
 
 function SendCard() {
   let [countryCode, setCountryCode] = useState("");
@@ -36,6 +37,10 @@ function SendCard() {
 
   useEffect(() => {
     if (!refreshedAccounts.refreshed || !web3) {
+      return;
+    }
+    if (web3.paused) {
+      setLoading(false);
       return;
     }
 
@@ -73,45 +78,48 @@ function SendCard() {
   };
 
   return (
-    <Card title="Send Money!">
-      <Form>
-        <Form.Item label="Country Code">
-          <Input
-            style={{
-              width: "50%",
-            }}
-            maxLength={3}
-            placeholder="Enter country code"
-            value={countryCode}
-            onChange={(e) => setCountryCode(e.target.value.toUpperCase())}
+    <div>
+      <PausedModal visible={web3 && web3.paused} />
+      <Card title="Send Money!">
+        <Form>
+          <Form.Item label="Country Code">
+            <Input
+              style={{
+                width: "50%",
+              }}
+              maxLength={3}
+              placeholder="Enter country code"
+              value={countryCode}
+              onChange={(e) => setCountryCode(e.target.value.toUpperCase())}
+            />
+          </Form.Item>
+          <Form.Item label="Amount in ETH">
+            <InputNumber
+              style={{
+                width: "50%",
+              }}
+              value={amount}
+              placeholder="Enter the amount"
+              min="0"
+              step="0.00000000000001"
+              stringMode
+              onChange={(e) => setAmount(e)}
+            />
+          </Form.Item>
+          <Form.Item>
+            <Button disabled={loading} type="primary" onClick={handleClick}>
+              Submit
+            </Button>
+          </Form.Item>
+        </Form>
+        {loading && (
+          <Alert
+            message="Please do not refresh this page until you see a confirmation modal with your transaction information"
+            type="warning"
           />
-        </Form.Item>
-        <Form.Item label="Amount in ETH">
-          <InputNumber
-            style={{
-              width: "50%",
-            }}
-            value={amount}
-            placeholder="Enter the amount"
-            min="0"
-            step="0.00000000000001"
-            stringMode
-            onChange={(e) => setAmount(e)}
-          />
-        </Form.Item>
-        <Form.Item>
-          <Button disabled={loading} type="primary" onClick={handleClick}>
-            Submit
-          </Button>
-        </Form.Item>
-      </Form>
-      {loading && (
-        <Alert
-          message="Please do not refresh this page until you see a confirmation modal with your transaction information"
-          type="warning"
-        />
-      )}
-    </Card>
+        )}
+      </Card>
+    </div>
   );
 }
 

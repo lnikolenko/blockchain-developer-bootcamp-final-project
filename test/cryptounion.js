@@ -78,7 +78,7 @@ contract("CryptoUnion", (accounts) => {
     }
   });
 
-  it("sends ETH to country", async () => {
+  it("sends ETH to country and withdraws money to the users account", async () => {
     const minValue = await instance.getMinValue();
     let transferCount = await instance.getTransferCount();
     assert.equal(0, transferCount, "Transfer count should be 0");
@@ -156,6 +156,37 @@ contract("CryptoUnion", (accounts) => {
         "Should not update county address if there unconfirmed transfers at this address"
       );
     }
+
+    const contractBalanceBefore = await web3.eth.getBalance(instance.address);
+    const ownerBalanceBefore = await web3.eth.getBalance(contractOwner);
+    assert.equal(
+      new BN(minValue.toString()),
+      contractBalanceBefore,
+      "contract's balance should equal minValue"
+    );
+    try {
+      await instance.withdraw({ from: alice });
+      assert.ok(false, "It didn't throw an axception");
+    } catch (e) {
+      assert.ok(
+        e.toString().includes("caller is not the owner"),
+        "Needs to fail because owner is required"
+      );
+    }
+    await instance.withdraw({ from: contractOwner });
+    const contractBalanceAfter = await web3.eth.getBalance(instance.address);
+    const ownerBalanceAfter = await web3.eth.getBalance(contractOwner);
+
+    assert.equal(
+      new BN("0"),
+      contractBalanceAfter,
+      "contract's balance should be 0 after withdrawal"
+    );
+    assert.isBelow(
+      Number(ownerBalanceBefore),
+      Number(ownerBalanceAfter),
+      "owner's balance should increase"
+    );
   });
 
   it("completes transfer", async () => {
@@ -194,5 +225,93 @@ contract("CryptoUnion", (accounts) => {
       countryAddressAfter,
       "country address should be updated as there are no pending transactions"
     );
+  });
+
+  it("does not let new 'write' functions go through if the contract is paused", async () => {
+    await instance.pause({
+      from: contractOwner,
+    });
+    let paused = await instance.paused({
+      from: contractOwner,
+    });
+    assert.ok(paused, "Contract should be paused");
+    try {
+      await instance.setAddress(countryCode, emptyAddress, {
+        from: contractOwner,
+      });
+      assert.ok(false, "It didn't throw an axception");
+    } catch (e) {
+      assert.ok(
+        e.toString().includes("Pausable: paused"),
+        "Needs to fail because the contract is paused"
+      );
+    }
+    await instance.unpause({
+      from: contractOwner,
+    });
+    paused = await instance.paused({
+      from: contractOwner,
+    });
+    assert.ok(!paused, "Contract should be unpaused");
+    await instance.setAddress(countryCode, emptyAddress, {
+      from: contractOwner,
+    });
+  });
+
+  it("does not let the user pause/unpause twice", async () => {
+    await instance.pause({
+      from: contractOwner,
+    });
+    try {
+      await instance.pause({
+        from: contractOwner,
+      });
+      assert.ok(false, "It didn't throw an axception");
+    } catch (e) {
+      assert.ok(
+        e.toString().includes("Pausable: paused"),
+        "Needs to fail because the contract is paused"
+      );
+    }
+    await instance.unpause({
+      from: contractOwner,
+    });
+    try {
+      await instance.unpause({
+        from: contractOwner,
+      });
+      assert.ok(false, "It didn't throw an axception");
+    } catch (e) {
+      assert.ok(
+        e.toString().includes("Pausable: not paused"),
+        "Needs to fail because the contract is not paused"
+      );
+    }
+  });
+
+  it("does not let the non-owner pause/unpause", async () => {
+    try {
+      await instance.pause({
+        from: alice,
+      });
+      assert.ok(false, "It didn't throw an axception");
+    } catch (e) {
+      assert.ok(
+        e.toString().includes("caller is not the owner"),
+        "Needs to fail because owner is requred"
+      );
+    }
+
+    try {
+      await instance.unpause({
+        from: alice,
+      });
+      assert.ok(false, "It didn't throw an axception");
+    } catch (e) {
+      assert.ok(
+        e.toString().includes("caller is not the owner"),
+        "Needs to fail because owner is requred"
+      );
+    }
   });
 });

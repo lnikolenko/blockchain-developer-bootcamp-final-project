@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { useWeb3 } from "../../providers/web3/getWeb3";
+import { useWeb3 } from "../../hooks/web3";
 import { Form, Input, Button, Card, Typography, message, Tag } from "antd";
+import { contractState } from "../../constants";
 
 const { Title } = Typography;
 
-function CountryPanel() {
+function CountryPanel({ paused }) {
   let [countryCode, setCountryCode] = useState("");
   let [retrivedCountryCode, setRetrivedCountryCode] = useState("");
   let [retrivedAddress, setRetrivedAddress] = useState("");
@@ -81,7 +82,7 @@ function CountryPanel() {
         //user explicitly denied access
         message.error("Please confirm the transaction in Metamask!");
       } else {
-        message.error(`Got ${e}`);
+        message.error(`Got ${e.message}`);
         console.log(e);
       }
     }
@@ -136,33 +137,37 @@ function CountryPanel() {
           </Form.Item>
         </Form>
         <br />
-        <Title level={5}>Set country address</Title>
-        <Form layout="inline">
-          <Form.Item label="Country Code">
-            <Input
-              maxLength={3}
-              placeholder="Enter country code"
-              value={countryCode}
-              onChange={(e) => setCountryCode(e.target.value.toUpperCase())}
-            />
-          </Form.Item>
-          <Form.Item label="Wallet Address">
-            <Input
-              placeholder="Enter wallet address"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-            />
-          </Form.Item>
-          <Form.Item>
-            <Button
-              disabled={loadingSet}
-              type="primary"
-              onClick={handleSetClick}
-            >
-              Submit
-            </Button>
-          </Form.Item>
-        </Form>
+        {paused.text === contractState.RUNNING.text && (
+          <div>
+            <Title level={5}>Set country address</Title>
+            <Form layout="inline">
+              <Form.Item label="Country Code">
+                <Input
+                  maxLength={3}
+                  placeholder="Enter country code"
+                  value={countryCode}
+                  onChange={(e) => setCountryCode(e.target.value.toUpperCase())}
+                />
+              </Form.Item>
+              <Form.Item label="Wallet Address">
+                <Input
+                  placeholder="Enter wallet address"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                />
+              </Form.Item>
+              <Form.Item>
+                <Button
+                  disabled={loadingSet}
+                  type="primary"
+                  onClick={handleSetClick}
+                >
+                  Submit
+                </Button>
+              </Form.Item>
+            </Form>
+          </div>
+        )}
       </Card>
     </div>
   );

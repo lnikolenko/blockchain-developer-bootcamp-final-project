@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { useWeb3 } from "../../providers/web3/getWeb3";
-import { Form, InputNumber, Button, Card, message } from "antd";
+import { useWeb3 } from "../../hooks/web3";
+import { Button, Card, message } from "antd";
 
-function TransferPanel() {
+function WithdrawPanel() {
   const { web3, connectToMetaMask } = useWeb3();
   let [refreshedAccounts, setRefreshedAccounts] = useState({
     refreshed: false,
     cb: null,
   });
   let [loading, setLoading] = useState(false);
-  let [transferId, setTransferId] = useState("");
+  let [balance, setBalance] = useState(false);
 
   const handleClick = async () => {
     setLoading(true);
@@ -21,7 +21,7 @@ function TransferPanel() {
       await connectToMetaMask();
       setRefreshedAccounts({
         refreshed: true,
-        cb: confirmTransfer,
+        cb: withraw,
       });
     } catch (e) {
       setLoading(false);
@@ -32,6 +32,7 @@ function TransferPanel() {
       message.error("Please allow access!");
     }
   };
+
   useEffect(() => {
     if (!refreshedAccounts.refreshed || !web3) {
       return;
@@ -39,11 +40,28 @@ function TransferPanel() {
     refreshedAccounts.cb(web3.contract, web3.accounts);
   }, [refreshedAccounts, web3]);
 
-  const confirmTransfer = async (contract, accounts) => {
+  useEffect(() => {
+    const getBalance = async (web3) => {
+      try {
+        const balance = await web3.web3.eth.getBalance(
+          web3.contract.options.address
+        );
+        setBalance(balance / 1e18);
+      } catch (e) {
+        console.error(e);
+        message.error("Could not get contracts balance!");
+      }
+    };
+
+    if (!web3) {
+      return;
+    }
+    getBalance(web3);
+  });
+
+  const withraw = async (contract, accounts) => {
     try {
-      await contract.methods
-        .confirmTransfer(transferId)
-        .send({ from: accounts[0] });
+      await contract.methods.withdraw().send({ from: accounts[0] });
       setLoading(false);
       message.success("Success!");
     } catch (e) {
@@ -60,29 +78,14 @@ function TransferPanel() {
 
   return (
     <div>
-      <Card title="Confirm Transfer">
-        <Form layout="inline">
-          <Form.Item label="Transfer id">
-            <InputNumber
-              style={{
-                width: "50%",
-              }}
-              placeholder="Enter Transfer Id"
-              value={transferId}
-              min="0"
-              step="1"
-              onChange={(e) => setTransferId(e)}
-            />
-          </Form.Item>
-          <Form.Item>
-            <Button disabled={loading} type="primary" onClick={handleClick}>
-              Submit
-            </Button>
-          </Form.Item>
-        </Form>
+      <Card title="Withdraw Contract Balance">
+        {web3 && <p>Current balance is {balance} ETH</p>}
+        <Button disabled={loading} type="primary" onClick={handleClick}>
+          Withdraw ETH
+        </Button>
       </Card>
     </div>
   );
 }
 
-export default TransferPanel;
+export default WithdrawPanel;

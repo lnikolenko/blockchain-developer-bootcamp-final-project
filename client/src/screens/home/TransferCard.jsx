@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useWeb3 } from "../../providers/web3/getWeb3";
+import { useWeb3 } from "../../hooks/web3";
 import { Form, Button, Card, message, InputNumber, Alert } from "antd";
 import confirmationModal from "./ConfirmationModal";
 
@@ -12,6 +12,10 @@ function TransferCard() {
   });
   let [loading, setLoading] = useState(false);
   const handleClick = async () => {
+    if (transferId === "" || transferId === null) {
+      message.error("Please input the transfer id!");
+      return;
+    }
     setLoading(true);
     setRefreshedAccounts({
       refreshed: false,
@@ -72,7 +76,11 @@ function TransferCard() {
   return (
     <Card title="View Transfer">
       <Form>
-        <Form.Item label="Transfer Id">
+        <Form.Item
+          label="Transfer Id"
+          name="transferId"
+          rules={[{ required: true, message: "Please input the transferId!" }]}
+        >
           <InputNumber
             style={{
               width: "50%",
@@ -81,7 +89,10 @@ function TransferCard() {
             value={transferId}
             min="0"
             step="1"
-            onChange={(e) => setTransferId(e)}
+            onChange={(e) => {
+              setTransferId(e);
+            }}
+            required
           />
         </Form.Item>
         <Form.Item>

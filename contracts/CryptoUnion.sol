@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/security/Pausable.sol";
 
-contract CryptoUnion is Ownable {
+contract CryptoUnion is Ownable, Pausable {
     //transfer id
     uint256 public transferCount = 0;
 
@@ -63,7 +64,6 @@ contract CryptoUnion is Ownable {
         string to,
         uint256 amount
     );
-
     /*
      * Modifiers
      */
@@ -108,6 +108,7 @@ contract CryptoUnion is Ownable {
     function setAddress(string memory countryCode, address wallet)
         public
         onlyOwner
+        whenNotPaused
         validCountryCode(countryCode)
         noPendingTransfers(countryCode)
     {
@@ -143,6 +144,7 @@ contract CryptoUnion is Ownable {
         payable
         paidEnough
         validCountryCode(countryCode)
+        whenNotPaused
     {
         // Here are the approximate steps:
         // 1. Create a transfer - need to figure out how much the contract should charge for the service
@@ -223,10 +225,24 @@ contract CryptoUnion is Ownable {
     function confirmTransfer(uint256 _transferId)
         public
         onlyOwner
+        whenNotPaused
         transferExists(_transferId)
         checkStatus(transfers[_transferId].status)
     {
         transfers[_transferId].status = Status.Confirmed;
         pendingTransfers[addresses[transfers[_transferId].to]] -= 1;
+    }
+
+    function withdraw() public onlyOwner {
+        (bool sent, ) = msg.sender.call{value: address(this).balance}("");
+        require(sent, "Failed to send Ether");
+    }
+
+    function pause() public onlyOwner {
+        Pausable._pause();
+    }
+
+    function unpause() public onlyOwner {
+        Pausable._unpause();
     }
 }
