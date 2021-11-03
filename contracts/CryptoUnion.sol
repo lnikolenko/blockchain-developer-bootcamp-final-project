@@ -23,19 +23,13 @@ contract CryptoUnion is Ownable, Pausable {
     // transfer id -> Transfer mapping
     mapping(uint256 => Transfer) public transfers;
 
-    // enum State
-    // Sent - the money was sent to the desination country
-    // Confirmed - the initiator of the trasfer was sent a confirmation that the intended recepient
-    // has received the money (a manual step for now)
-    // If the send fails the initiator will be refued their payment minus the gas fees via revert
-    // State transitions:
-    // Sent -> Confirmed
+    /// @notice Status enum which can either be "Sent" or "Confirmed"
     enum Status {
         Sent,
         Confirmed
     }
 
-    // struct Transfer
+    /// @notice Transfer struct that captures all the necessary information about a transafer
     struct Transfer {
         uint256 transferId;
         address payable from;
