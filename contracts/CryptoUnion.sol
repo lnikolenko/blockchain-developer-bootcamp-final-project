@@ -47,12 +47,23 @@ contract CryptoUnion is Ownable, Pausable {
     /*
      * Events
      */
+    /// @notice Emitted after successful address update for country code -> address pair
+    /// @param countryCode Three-letter country code, e.g. BHS
+    /// @param oldWallet An old address associated with the country code
+    /// @param newWallet A new address associated with the country code
     event LogCountryAddressUpdated(
         string countryCode,
         address oldWallet,
         address newWallet
     );
 
+    /// @notice Emitted after we have successfully sent the money to an address associated with a given country
+    /// @param transferId id of the transfer, can be used to view the transfer later
+    /// @param from Sender's address
+    /// @param to Three-letter country code, e.g. BHS
+    /// @param amount Amount transferred (msg.value - contract fee)
+    /// @param status Status of the transfer
+    /// @param contractFee contract fee
     event LogTransferSent(
         uint256 transferId,
         address from,
@@ -61,6 +72,12 @@ contract CryptoUnion is Ownable, Pausable {
         Status status,
         uint256 contractFee
     );
+
+    /// @notice Emitted if the send money call failed
+    /// @param transferId id of the transfer, can be used to view the transfer later
+    /// @param from Sender's address
+    /// @param to Three-letter country code, e.g. BHS
+    /// @param amount Amount transferred (msg.value - contract fee)
     event LogTransferFailed(
         uint256 transferId,
         address from,
@@ -71,25 +88,30 @@ contract CryptoUnion is Ownable, Pausable {
      * Modifiers
      */
 
-    modifier validCountryCode(string memory countrycode) {
-        bytes memory tempEmptyStringTest = bytes(countrycode);
+    /// @notice Validate the given country code
+    /// @dev Inputs longer than three English letters will be rejected
+    /// @param countryCode Three-letter country code, e.g. BHS
+    modifier validCountryCode(string memory countryCode) {
+        bytes memory tempEmptyStringTest = bytes(countryCode);
         require(tempEmptyStringTest.length == 3, "Invalid country code!");
         _;
     }
 
-    // validate that the initaltor of the transfer paid a non-zero amount
+    /// @notice Validate that the sender has send more ETH than the contract fee
     modifier paidEnough() {
         require(msg.value >= minValue, "Insufficient ammount!");
         _;
     }
 
-    // validate transfer status, expectedStatus == actualStatus
+    /// @notice Validate that the transfer status is not Confirmed
+    /// @param status The transfer status
     modifier checkStatus(Status status) {
         require(status == Status.Sent, "Transfer is already confirmed!");
         _;
     }
 
-    // we cannot uodate an address if there are pending transfers tied to that address
+    /// @notice Validate that there are no pending transfers for a given country code
+    /// @param countryCode Three-letter country code, e.g. BHS
     modifier noPendingTransfers(string memory countryCode) {
         require(
             pendingTransfers[addresses[countryCode]] == 0,
@@ -98,6 +120,8 @@ contract CryptoUnion is Ownable, Pausable {
         _;
     }
 
+    /// @notice Validate that the transfer with a given transfer id exists
+    /// @param _transferId Transfer id
     modifier transferExists(uint256 _transferId) {
         address from = transfers[_transferId].from;
         require(from != address(0), "Transfer does not exist!");

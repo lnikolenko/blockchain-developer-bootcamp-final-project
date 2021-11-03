@@ -5,32 +5,37 @@ You can use this contract to transfer money to another address associated with a
 
 Only ETH transfers are supported for now
 
-### `validCountryCode(string countrycode)`
+### `validCountryCode(string countryCode)`
+
+Validate the given country code
 
 
-
+Inputs longer than three English letters will be rejected
 
 
 ### `paidEnough()`
 
-
+Validate that the sender has send more ETH than the contract fee
 
 
 
 ### `checkStatus(enum CryptoUnion.Status status)`
 
+Validate that the transfer status is not Confirmed
 
 
 
 
 ### `noPendingTransfers(string countryCode)`
 
+Validate that there are no pending transfers for a given country code
 
 
 
 
 ### `transferExists(uint256 _transferId)`
 
+Validate that the transfer with a given transfer id exists
 
 
 
@@ -120,18 +125,21 @@ Implementing the circuit breaker pattern
 
 ### `LogCountryAddressUpdated(string countryCode, address oldWallet, address newWallet)`
 
+Emitted after successful address update for country code -> address pair
 
 
 
 
 ### `LogTransferSent(uint256 transferId, address from, string to, uint256 amount, enum CryptoUnion.Status status, uint256 contractFee)`
 
+Emitted after we have successfully sent the money to an address associated with a given country
 
 
 
 
 ### `LogTransferFailed(uint256 transferId, address from, string to, uint256 amount)`
 
+Emitted if the send money call failed
 
 
 
