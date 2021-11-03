@@ -3,6 +3,10 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
 
+/// @title Crypto Union Contract
+/// @author Nikki Nikolenko
+/// @notice You can use this contract to transfer money to another address associated with a given country
+/// @dev Only ETH transfers are supported for now
 contract CryptoUnion is Ownable, Pausable {
     //transfer id
     uint256 public transferCount = 0;
@@ -43,7 +47,6 @@ contract CryptoUnion is Ownable, Pausable {
     /*
      * Events
      */
-    // <LogForSale event: sku arg>
     event LogCountryAddressUpdated(
         string countryCode,
         address oldWallet,
@@ -101,10 +104,17 @@ contract CryptoUnion is Ownable, Pausable {
         _;
     }
 
+    /// @notice Checks if the transaction was sent by the contract owner
+    /// @dev Used for admin sign-in in the web UI
+    /// @return true if the sender address belongs to contract owner, false otherwise.
     function adminSignIn() public view returns (bool) {
         return msg.sender == owner();
     }
 
+    /// @notice Set the country code -> address pair
+    /// @dev Also allows you to delete supported country codes by setting the wallet to address to 0
+    /// @param countryCode Three-letter country code, e.g. BHS
+    /// @param wallet Wallet address corresponding to the country code
     function setAddress(string memory countryCode, address wallet)
         public
         onlyOwner
@@ -117,6 +127,10 @@ contract CryptoUnion is Ownable, Pausable {
         emit LogCountryAddressUpdated(countryCode, oldWallet, wallet);
     }
 
+    /// @notice Get an address corresponding to a give country code
+    /// @dev Inputs longer than three English letters will be rejected
+    /// @param countryCode Three-letter country code, e.g. BHS
+    /// @return address corresponding the country code
     function getAddress(string memory countryCode)
         public
         view
@@ -126,19 +140,21 @@ contract CryptoUnion is Ownable, Pausable {
         return addresses[countryCode];
     }
 
-    /*
-    function setMinValue(uint256 _minValue) public isOwner {
-        revert("Not implemented!");
-    }
-    */
+    /// @notice Get the contract fee
+    /// @return contract fee
     function getMinValue() public view returns (uint256) {
         return minValue;
     }
 
+    /// @notice Get transfer count
+    /// @return transfer count
     function getTransferCount() public view returns (uint256) {
         return transferCount;
     }
 
+    /// @notice Send ETH to a given country, contract fee will be withheld
+    /// @dev If we are unable to perform the send the whole transaction is reverted
+    /// @param countryCode Three-letter country code, e.g. BHS
     function sendEthToCountry(string memory countryCode)
         public
         payable
@@ -184,21 +200,9 @@ contract CryptoUnion is Ownable, Pausable {
         );
     }
 
-    /*
-    function sendToCountry(string memory countryCode)
-        public
-        payable
-        paidEnough
-    {
-        // Similar steps to sendEthToCountry() but with USDT
-        revert("Not implemented!");
-    }
-
-    function refund(address sender) public returns (bool) {
-        revert("Not implemented!");
-    }
-    */
-
+    /// @notice Get information about a given trasfer
+    /// @param _transferId transfer id
+    /// @return transfer information: transfer id, from - address of the sender, to - receiving country code, status - status of the transfer, amount transferred (in ETH), contract fee
     function getTransfer(uint256 _transferId)
         public
         view
@@ -222,6 +226,8 @@ contract CryptoUnion is Ownable, Pausable {
         );
     }
 
+    /// @notice Confirm a given transfer, should be done after Admin has transferred the money to the recepient off-chain
+    /// @param _transferId transfer id
     function confirmTransfer(uint256 _transferId)
         public
         onlyOwner
@@ -233,15 +239,21 @@ contract CryptoUnion is Ownable, Pausable {
         pendingTransfers[addresses[transfers[_transferId].to]] -= 1;
     }
 
+    /// @notice Withdraw contract's balance to the owner's address
+    /// @dev The function will revert if the send wasn't successful
     function withdraw() public onlyOwner {
         (bool sent, ) = msg.sender.call{value: address(this).balance}("");
         require(sent, "Failed to send Ether");
     }
 
+    /// @notice pause the contract -- the contract will start functioning in read-only mode.
+    /// @dev Implementing the circuit breaker pattern
     function pause() public onlyOwner {
         Pausable._pause();
     }
 
+    /// @notice resume the contract for both reads and writes
+    /// @dev Implementing the circuit breaker pattern
     function unpause() public onlyOwner {
         Pausable._unpause();
     }
