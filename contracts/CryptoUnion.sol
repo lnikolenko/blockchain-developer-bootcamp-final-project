@@ -2,12 +2,13 @@
 pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
 /// @title Crypto Union Contract
 /// @author Nikki Nikolenko
 /// @notice You can use this contract to transfer money to another address associated with a given country
 /// @dev Only ETH transfers are supported for now
-contract CryptoUnion is Ownable, Pausable {
+contract CryptoUnion is Ownable, Pausable, ReentrancyGuard {
     //transfer id
     uint256 public transferCount = 0;
 
@@ -179,6 +180,7 @@ contract CryptoUnion is Ownable, Pausable {
         paidEnough
         validCountryCode(countryCode)
         whenNotPaused
+        nonReentrant
     {
         // Here are the approximate steps:
         // 1. Create a transfer - need to figure out how much the contract should charge for the service
