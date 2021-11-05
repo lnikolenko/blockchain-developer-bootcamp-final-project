@@ -261,7 +261,7 @@ contract CryptoUnion is Ownable, Pausable, ReentrancyGuard {
 
     /// @notice Withdraw contract's balance to the owner's address
     /// @dev The function will revert if the send wasn't successful
-    function withdraw() public onlyOwner {
+    function withdraw() public onlyOwner nonReentrant {
         (bool sent, ) = msg.sender.call{value: address(this).balance}("");
         require(sent, "Failed to send Ether");
     }
