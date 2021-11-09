@@ -1,7 +1,7 @@
 import React from "react";
 import { Modal } from "antd";
 
-function MetaMaskModal({ visible }) {
+function PausedModal({ visible }) {
   return (
     <Modal
       visible={visible}
@@ -14,4 +14,4 @@ function MetaMaskModal({ visible }) {
   );
 }
 
-export default MetaMaskModal;
+export default PausedModal;

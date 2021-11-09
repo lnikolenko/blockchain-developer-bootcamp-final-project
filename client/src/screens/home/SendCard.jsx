@@ -34,11 +34,11 @@ function SendCard() {
   };
 
   useEffect(() => {
-    if (!refreshedAccounts.refreshed || !contract || !accounts) {
-      return;
-    }
     if (paused) {
       setLoading(false);
+      return;
+    }
+    if (!refreshedAccounts.refreshed || !contract || !accounts) {
       return;
     }
 

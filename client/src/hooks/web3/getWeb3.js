@@ -47,7 +47,6 @@ function useProvideWeb3() {
 
   const connectToMetaMask = async () => {
     try {
-      console.log("hi!");
       const w3 = await getWeb3();
       setWeb3(w3);
 
