@@ -1,4 +1,11 @@
 # Crypto Union
+This is a final project for Consensys Blockchain Developmer Bootcamp 2021. 
+## Table of Contents
+- About the Project
+- Directory Structure
+- Design Patterns and Avoiding Common Attacks
+- Installation
+- Deployment
 ## Problem Statement
 Today it is very hard or impossible to send money transfers between certain countries (e.g. from Russia to US). Before the transfer goes through (*if it goes through*) you are required to fill out countless forms with high processing times. Using Western Union international money transfers is inconvenient as well, since you are subject to high commission fees and you can only send limited amounts of money. This project will attempt to solve this issue by enabling regular users to send money internationally with low commission (as opposed to [Ripple](https://ripple.com/), which uses a B2B model).
 ## Workflow
