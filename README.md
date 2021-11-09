@@ -37,5 +37,7 @@ The most notable components of `client/src/` folder are`client/src/screens/` - t
 ### Pre-requisites
 1. Install [Node.js](https://nodejs.org/en/download/)
 2. Install [Truffle](https://www.trufflesuite.com/docs/truffle/getting-started/installation)
-3. Optional - install [Ganache](https://www.trufflesuite.com/ganache) - you can use any blockchain emulator, but I will be using Ganache in the installation instructions. 
+3. Optional: install [Ganache](https://www.trufflesuite.com/ganache) - you can use any blockchain emulator, but I will be using Ganache in the installation instructions.
+4. Clone this repo and `cd` into the cloned `blockchain-developer-bootcamp-final-project/`
 ### Smart Contract
+1. Start up a local blockchain. If you are using Ganache, create a new workspace with `blockchain-developer-bootcamp-final-project/truffle-config.js` project. 
