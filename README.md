@@ -5,7 +5,7 @@ This is a final project for Consensys Blockchain Developmer Bootcamp 2021. It is
 - [Directory Structure](https://github.com/lnikolenko/blockchain-developer-bootcamp-final-project/blob/main/README.md#directory-structure)
 - Design Patterns and Avoiding Common Attacks
 - [Installation](https://github.com/lnikolenko/blockchain-developer-bootcamp-final-project/blob/main/README.md#installation)
-- Deployment
+- [Deployment](https://github.com/lnikolenko/blockchain-developer-bootcamp-final-project/blob/main/README.md#deployment)
 - Documentation
 ## About the Project
 ### Problem Statement
