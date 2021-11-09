@@ -1,7 +1,7 @@
 # Crypto Union
 This is a final project for Consensys Blockchain Developmer Bootcamp 2021. 
 ## Table of Contents
-- About the Project
+- [About the Project](https://github.com/lnikolenko/blockchain-developer-bootcamp-final-project/blob/main/README.md#about-the-project)
 - Directory Structure
 - Design Patterns and Avoiding Common Attacks
 - Installation
