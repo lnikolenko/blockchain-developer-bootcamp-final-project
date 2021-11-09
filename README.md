@@ -50,4 +50,4 @@ The most notable components of `client/src/` folder are`client/src/screens/` - t
 1. Clone this repo and `cd` into the cloned `blockchain-developer-bootcamp-final-project/client`
 2. `npm i` - installs the dependencies for the fronted
 3. `npm run start`
-4. Go to `http://localhost:3000` in your browser
+4. Go to `http://localhost:3000` in your browser. Admin panel is located at `http://localhost:3000/admin`
