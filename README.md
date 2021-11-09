@@ -1,20 +1,53 @@
 # Crypto Union
-## Problem Statement
-Today it is very hard or impossible to send money transfers between certain countries (e.g. from Russia to US). Before the transfer goes through (*if it goes through*) you are required to fill out countless forms with high processing times. Using Western Union international money transfers is inconvenient as well, since you are subject to high commission fees and you can only send limited amounts of money. This project will attempt to solve this issue by enabling regular users to send money internationally with low commission (as opposed to [Ripple](https://ripple.com/), which uses a B2B model).
-## Workflow
-Let's go through the workflow using a concrete example. Alice who is located in Russia wants to send $500 to Bob, who is located in the US.
+This is a final project for Consensys Blockchain Developmer Bootcamp 2021. 
+## Table of Contents
+- [About the Project](https://github.com/lnikolenko/blockchain-developer-bootcamp-final-project/blob/main/README.md#about-the-project)
+- [Directory Structure](https://github.com/lnikolenko/blockchain-developer-bootcamp-final-project/blob/main/README.md#directory-structure)
+- Design Patterns and Avoiding Common Attacks
+- [Installation](https://github.com/lnikolenko/blockchain-developer-bootcamp-final-project/blob/main/README.md#installation)
+- Deployment
+- Documentation
+## About the Project
+### Problem Statement
+Today it is very hard or impossible to send money transfers between certain countries (e.g. from Russia to US). Before the transfer goes through (*if it goes through*) you are required to fill out countless forms with high processing times. Using Western Union international money transfers is inconvenient as well, since you are subject to high commission fees and you can only send limited amounts of money. This project will attempt to solve this issue by enabling regular users to send money internationally with low commission (as opposed to [Ripple](https://ripple.com/), which uses a B2B model only).
+### Workflow
+Let's go through the workflow using a concrete example. Alice who is located in Russia wants to send 0.5 ETH to Bob, who is located in the US.
 Setup:
 1. We have an account with crypto exchange supported in Russia with 0xabc Ethereum address
 2. We have an account with crypto exchange supported in US with 0xdef Ethereum address
 3. An owner of the smart contract can do CRUD operations country -> address mappings.
 
 Actual workflow:
-1. Alice goes in the web UI and submits a request to transfer $500 to Bob. She needs to specify Bob's country and contact information (e.g. email, phone number, payment credentials)
-2. Alice signs a transaction through her MetaMask account to transfer $500 to 0xabc (address belongs to Crypto Union dapp).
-3. The $500 get converted into 500 USDT.
-4. The smart contract sends the 500 USDT to an address that belongs to a crypto exchange in the US, a.k.a 0xdef account.
-5. We cash out the ~$500 (it will not bee $500 precisely as we need to account for gas fees) on the US exchange to Bob's bank account (we will leave this as a manual process for now).
-6. A person transferring the funds out of the exchange account will update the status of the transfer in the smart contract and send Alice some confirmation of transfer to Bob.  
+1. Alice goes in the web UI and submits a request through MetaMask to transfer 0.5 ETH to the US. 
+2. The smart contract sends the 0.05 ETH to an address that belongs to a crypto exchange in the US, i.e. 0xdef account.
+3. A contract owner will confirm the transfer after they manually cash out the ~0.5 ETH (it will not bee 0.5 ETH precisely as we need to account for contract and gas fees) on the US exchange to Bob's bank account.
 
-Note, that all transactions and status updates will be recorded on the blockchain so Alice and Bob can be sure that their money did not get lost along the way.
-For the bootcamp specifically, I am planning to have some basic web UI and the ability for a user to specify the amount of money to transfer, actually sending the money from address A to address B and recording all the movements on the blockchain. If time permits, I will try to programmatically purchase crypto on Coinbase before sending it to an address.
+Alice will be able to monitor the status of her transfer though the web UI as well. 
+
+Note, that there is also and Admin panel which you can only access from the contract owner account. This panel lets you:
+- Confirm a transfer
+- View and update a wallet address for a given country
+- Pause/unpause the contract
+- Withdraw accumulated contract fees to the owner's account
+## Directory Structure
+The project was bootstrapped from [Truffle React](https://www.trufflesuite.com/boxes/react) box. The `client/` folder contains the React frontend app, everything outside of this folder contains the smart contract code. Note, that the smart contract code has its own `package.json` and `node_modules/` for the smart contract's dependencies (which different from the ones inside of `client/`). There is also a `docs/` folder with the generated documentation (see more in the Documentation section). `test/` folder contain's smart contract's tests. 
+
+The most notable components of `client/src/` folder are`client/src/screens/` - the UI for the website, `client/src/hooks/` - hooks that manage the global state of the app, `client/src/contracts` - the ABI for the smart contract and dependencies and `client/src/components` - small UI pieces that are re-used across different views.
+## Installation
+### Pre-requisites
+1. Install [Node.js](https://nodejs.org/en/download/)
+2. Install [Truffle](https://www.trufflesuite.com/docs/truffle/getting-started/installation)
+3. Optional: install [Ganache](https://www.trufflesuite.com/ganache) - you can use any blockchain emulator, but I will be using Ganache in the installation instructions
+4. Install [MetaMask](https://metamask.io/)
+### Smart Contract
+1. Start up a local blockchain. If you are using Ganache, create a new workspace with `blockchain-developer-bootcamp-final-project/truffle-config.js` project. See [this page](https://www.trufflesuite.com/docs/ganache/workspaces/creating-workspaces#creating-a-workspace-from-scratch) for step-by-step screenshots. 
+2. Connect MetaMask to your local blockhain, see directions [here](https://asifwaquar.com/connect-metamask-to-localhost/). RPC URL is http://127.0.0.1:7545, chain ID is 5777. Import the generated local accounts as needed. 
+3. Clone this repo and `cd` into the cloned `blockchain-developer-bootcamp-final-project/`
+4. `npm i` - installs the contract dependencies
+5. `truffle migrate --reset` - will deploy `CryptoUnion.sol` onto the local blockchain make it available for use. 
+6. `truffle test` - run unit tests for the smart contract. 
+### Frontend
+1. Clone this repo and `cd` into the cloned `blockchain-developer-bootcamp-final-project/client`
+2. `npm i` - installs the dependencies for the fronted
+3. `npm run start`
+4. Go to `http://localhost:3000` in your browser. Admin panel is located at `http://localhost:3000/admin`
