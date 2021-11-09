@@ -30,14 +30,24 @@ Note, that there is also and Admin panel which you can only access from the cont
 - Pause/unpause the contract
 - Withdraw accumulated contract fees to the owner's account
 ## Directory Structure
-The project was bootstrapped from [Truffle React](https://www.trufflesuite.com/boxes/react) box. The `client/` folder contains the frontend app, everything outside of this folder contains the smart contract code. Note, that the smart contract code has its own `package.json` and `node_modules/` for the smart contract's dependencies (which different from the ones inside of `client/`). There is also a `docs/` folder with the generated documentation (see more in the Documentation section). `test/` folder contain's smart contract's tests. 
+The project was bootstrapped from [Truffle React](https://www.trufflesuite.com/boxes/react) box. The `client/` folder contains the React frontend app, everything outside of this folder contains the smart contract code. Note, that the smart contract code has its own `package.json` and `node_modules/` for the smart contract's dependencies (which different from the ones inside of `client/`). There is also a `docs/` folder with the generated documentation (see more in the Documentation section). `test/` folder contain's smart contract's tests. 
 
 The most notable components of `client/src/` folder are`client/src/screens/` - the UI for the website, `client/src/hooks/` - hooks that manage the global state of the app, `client/src/contracts` - the ABI for the smart contract and dependencies and `client/src/components` - small UI pieces that are re-used across different views.
 ## Installation
 ### Pre-requisites
 1. Install [Node.js](https://nodejs.org/en/download/)
 2. Install [Truffle](https://www.trufflesuite.com/docs/truffle/getting-started/installation)
-3. Optional: install [Ganache](https://www.trufflesuite.com/ganache) - you can use any blockchain emulator, but I will be using Ganache in the installation instructions.
-4. Clone this repo and `cd` into the cloned `blockchain-developer-bootcamp-final-project/`
+3. Optional: install [Ganache](https://www.trufflesuite.com/ganache) - you can use any blockchain emulator, but I will be using Ganache in the installation instructions
+4. Install [MetaMask](https://metamask.io/)
 ### Smart Contract
-1. Start up a local blockchain. If you are using Ganache, create a new workspace with `blockchain-developer-bootcamp-final-project/truffle-config.js` project. 
+1. Start up a local blockchain. If you are using Ganache, create a new workspace with `blockchain-developer-bootcamp-final-project/truffle-config.js` project. See [this page](https://www.trufflesuite.com/docs/ganache/workspaces/creating-workspaces#creating-a-workspace-from-scratch) for step-by-step screenshots. 
+2. Connect MetaMask to your local blockhain, see directions [here](https://asifwaquar.com/connect-metamask-to-localhost/). RPC URL is http://127.0.0.1:7545, chain ID is 5777. Import the generated local accounts as needed. 
+3. Clone this repo and `cd` into the cloned `blockchain-developer-bootcamp-final-project/`
+4. `npm i` - installs the contract dependencies
+5. `truffle migrate --reset` - will deploy `CryptoUnion.sol` onto the local blockchain make it available for use. 
+6. `truffle test` - run unit tests for the smart contract. 
+### Frontend
+1. Clone this repo and `cd` into the cloned `blockchain-developer-bootcamp-final-project/client`
+2. `npm i` - installs the dependencies for the fronted
+3. `npm run start`
+4. Go to `http://localhost:3000` in your browser
