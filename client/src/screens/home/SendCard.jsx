@@ -7,7 +7,7 @@ import PausedModal from "../../components/PausedModal";
 function SendCard() {
   let [countryCode, setCountryCode] = useState("");
   let [amount, setAmount] = useState("");
-  const { web3, connectToMetaMask } = useWeb3();
+  const { contract, accounts, paused, connectToMetaMask } = useWeb3();
   let [refreshedAccounts, setRefreshedAccounts] = useState({
     refreshed: false,
     cb: null,
@@ -15,12 +15,10 @@ function SendCard() {
   let [loading, setLoading] = useState(false);
   const handleClick = async () => {
     setLoading(true);
-    setRefreshedAccounts({
-      refreshed: false,
-      cb: null,
-    });
     try {
-      await connectToMetaMask();
+      if (!contract) {
+        await connectToMetaMask();
+      }
       setRefreshedAccounts({
         refreshed: true,
         cb: sendEthToCountry,
@@ -36,18 +34,22 @@ function SendCard() {
   };
 
   useEffect(() => {
-    if (!refreshedAccounts.refreshed || !web3) {
+    if (!refreshedAccounts.refreshed || !contract || !accounts) {
       return;
     }
-    if (web3.paused) {
+    if (paused) {
       setLoading(false);
       return;
     }
 
-    refreshedAccounts.cb(web3.contract, web3.accounts);
-  }, [refreshedAccounts, web3]);
+    refreshedAccounts.cb(contract, accounts);
+  }, [refreshedAccounts, paused, contract, accounts]);
 
   const sendEthToCountry = async (contract, accounts) => {
+    setRefreshedAccounts({
+      refreshed: false,
+      cb: null,
+    });
     try {
       const amountWei = amount * 1e18;
       const result = await contract.methods
@@ -79,7 +81,7 @@ function SendCard() {
 
   return (
     <div>
-      <PausedModal visible={web3 && web3.paused} />
+      <PausedModal visible={paused} />
       <Card title="Send Money!">
         <Form>
           <Form.Item label="Country Code">

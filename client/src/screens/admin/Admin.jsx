@@ -9,22 +9,26 @@ import WithdrawPanel from "./WithdrawPanel";
 import { contractState } from "../../constants";
 
 function Admin() {
-  const { web3, connectToMetaMask, checkMetaMaskInstallation } = useWeb3();
+  const {
+    contract,
+    accounts,
+    paused,
+    connectToMetaMask,
+    checkMetaMaskInstallation,
+  } = useWeb3();
   let [refreshedAccounts, setRefreshedAccounts] = useState({
     refreshed: false,
     cb: null,
   });
   let [loading, setLoading] = useState(false);
   let [signedIn, setSignedIn] = useState(false);
-  let [paused, setPaused] = useState(contractState.UNKNOWN);
+  let [p, setPaused] = useState(contractState.UNKNOWN);
   const handleClick = async () => {
     setLoading(true);
-    setRefreshedAccounts({
-      refreshed: false,
-      cb: null,
-    });
     try {
-      await connectToMetaMask();
+      if (!contract) {
+        await connectToMetaMask();
+      }
       setRefreshedAccounts({
         refreshed: true,
         cb: adminSignIn,
@@ -39,25 +43,29 @@ function Admin() {
     }
   };
   useEffect(() => {
-    if (!refreshedAccounts.refreshed || !web3) {
+    if (!refreshedAccounts.refreshed || !contract || !accounts) {
       return;
     }
 
-    refreshedAccounts.cb(web3.contract, web3.accounts);
-  }, [web3, refreshedAccounts]);
+    refreshedAccounts.cb(contract, accounts);
+  }, [refreshedAccounts, contract, accounts]);
 
   useEffect(() => {
-    if (!web3 || web3.paused === null) {
+    if (paused === null) {
       return;
     }
-    if (web3.paused) {
+    if (paused) {
       setPaused(contractState.PAUSED);
     } else {
       setPaused(contractState.RUNNING);
     }
-  }, [web3]);
+  }, [paused]);
 
   const adminSignIn = async (contract, accounts) => {
+    setRefreshedAccounts({
+      refreshed: false,
+      cb: null,
+    });
     try {
       const response = await contract.methods
         .adminSignIn()
@@ -81,7 +89,7 @@ function Admin() {
     }
   };
 
-  const pause = async (contract, accounts, setLoadingcb, setPausedcb) => {
+  const pause = async (contract, accounts, setLoadingcb) => {
     try {
       await contract.methods.pause().send({ from: accounts[0] });
       setLoadingcb(false);
@@ -99,7 +107,7 @@ function Admin() {
     }
   };
 
-  const resume = async (contract, accounts, setLoadingcb, setPausedcb) => {
+  const resume = async (contract, accounts, setLoadingcb) => {
     try {
       await contract.methods.unpause().send({ from: accounts[0] });
       setLoadingcb(false);
@@ -134,11 +142,11 @@ function Admin() {
           </Button>
         ) : (
           <div>
-            <CountryPanel paused={paused} />
+            <CountryPanel paused={p} />
             <br />
-            {paused.text == contractState.RUNNING.text && <TransferPanel />}
+            {p.text == contractState.RUNNING.text && <TransferPanel />}
             <br />
-            <PausePanel pause={pause} resume={resume} paused={paused} />
+            <PausePanel pause={pause} resume={resume} paused={p} />
             <br />
             <WithdrawPanel />
           </div>

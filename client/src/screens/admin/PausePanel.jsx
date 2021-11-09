@@ -4,7 +4,7 @@ import { Form, Button, Card, message, Tag } from "antd";
 import { contractState } from "../../constants";
 
 function PausePanel({ pause, resume, paused }) {
-  const { web3, connectToMetaMask } = useWeb3();
+  const { contract, accounts, connectToMetaMask } = useWeb3();
   let [refreshedAccounts, setRefreshedAccounts] = useState({
     refreshed: false,
     cb: null,
@@ -13,12 +13,10 @@ function PausePanel({ pause, resume, paused }) {
 
   const handleClick = async (cb) => {
     setLoading(true);
-    setRefreshedAccounts({
-      refreshed: false,
-      cb: null,
-    });
     try {
-      await connectToMetaMask();
+      if (!contract) {
+        await connectToMetaMask();
+      }
       setRefreshedAccounts({
         refreshed: true,
         cb: cb,
@@ -34,11 +32,15 @@ function PausePanel({ pause, resume, paused }) {
   };
 
   useEffect(() => {
-    if (!refreshedAccounts.refreshed || !web3) {
+    if (!refreshedAccounts.refreshed || !contract || !accounts) {
       return;
     }
-    refreshedAccounts.cb(web3.contract, web3.accounts, setLoading);
-  }, [refreshedAccounts, web3]);
+    refreshedAccounts.cb(contract, accounts, setLoading);
+    setRefreshedAccounts({
+      refreshed: false,
+      cb: null,
+    });
+  }, [refreshedAccounts, contract, accounts]);
 
   return (
     <div>

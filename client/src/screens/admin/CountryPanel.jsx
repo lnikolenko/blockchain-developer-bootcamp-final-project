@@ -10,7 +10,7 @@ function CountryPanel({ paused }) {
   let [retrivedCountryCode, setRetrivedCountryCode] = useState("");
   let [retrivedAddress, setRetrivedAddress] = useState("");
   let [address, setAddress] = useState("");
-  const { web3, connectToMetaMask } = useWeb3();
+  const { contract, accounts, connectToMetaMask } = useWeb3();
   let [refreshedAccounts, setRefreshedAccounts] = useState({
     refreshed: false,
     cb: null,
@@ -20,12 +20,10 @@ function CountryPanel({ paused }) {
 
   const handleGetClick = async () => {
     setLoadingGet(true);
-    setRefreshedAccounts({
-      refreshed: false,
-      cb: null,
-    });
     try {
-      await connectToMetaMask();
+      if (!contract) {
+        await connectToMetaMask();
+      }
       setRefreshedAccounts({
         refreshed: true,
         cb: getAddressContract,
@@ -42,12 +40,10 @@ function CountryPanel({ paused }) {
 
   const handleSetClick = async () => {
     setLoadingSet(true);
-    setRefreshedAccounts({
-      refreshed: false,
-      cb: null,
-    });
     try {
-      await connectToMetaMask();
+      if (!contract) {
+        await connectToMetaMask();
+      }
       setRefreshedAccounts({
         refreshed: true,
         cb: setAddressContract,
@@ -63,18 +59,24 @@ function CountryPanel({ paused }) {
   };
 
   useEffect(() => {
-    if (!refreshedAccounts.refreshed || !web3) {
+    if (!refreshedAccounts.refreshed || !contract || !accounts) {
       return;
     }
-    refreshedAccounts.cb(web3.contract, web3.accounts);
-  }, [refreshedAccounts, web3]);
+    refreshedAccounts.cb(contract, accounts);
+  }, [refreshedAccounts, contract, accounts]);
 
   const setAddressContract = async (contract, accounts) => {
+    setRefreshedAccounts({
+      refreshed: false,
+      cb: null,
+    });
     try {
       await contract.methods
         .setAddress(countryCode, address)
         .send({ from: accounts[0] });
       setLoadingSet(false);
+      setCountryCode("");
+      setAddress("");
       message.success("Success!");
     } catch (e) {
       setLoadingSet(false);
@@ -89,6 +91,10 @@ function CountryPanel({ paused }) {
   };
 
   const getAddressContract = async (contract, accounts) => {
+    setRefreshedAccounts({
+      refreshed: false,
+      cb: null,
+    });
     try {
       const response = await contract.methods
         .getAddress(retrivedCountryCode)

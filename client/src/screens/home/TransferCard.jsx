@@ -5,7 +5,7 @@ import confirmationModal from "./ConfirmationModal";
 
 function TransferCard() {
   let [transferId, setTransferId] = useState("");
-  const { web3, connectToMetaMask } = useWeb3();
+  const { contract, connectToMetaMask } = useWeb3();
   let [refreshedAccounts, setRefreshedAccounts] = useState({
     refreshed: false,
     cb: null,
@@ -22,7 +22,9 @@ function TransferCard() {
       cb: null,
     });
     try {
-      await connectToMetaMask();
+      if (!contract) {
+        await connectToMetaMask();
+      }
       setRefreshedAccounts({
         refreshed: true,
         cb: sendEthToCountry,
@@ -38,13 +40,17 @@ function TransferCard() {
   };
 
   useEffect(() => {
-    if (!refreshedAccounts.refreshed || !web3) {
+    if (!refreshedAccounts.refreshed || !contract) {
       return;
     }
-    refreshedAccounts.cb(web3.contract);
-  }, [refreshedAccounts, web3]);
+    refreshedAccounts.cb(contract);
+  }, [refreshedAccounts, contract]);
 
   const sendEthToCountry = async (contract) => {
+    setRefreshedAccounts({
+      refreshed: false,
+      cb: null,
+    });
     try {
       const result = await contract.methods.getTransfer(transferId).call();
       console.log(result);

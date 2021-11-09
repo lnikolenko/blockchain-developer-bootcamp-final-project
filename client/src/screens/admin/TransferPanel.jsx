@@ -3,7 +3,7 @@ import { useWeb3 } from "../../hooks/web3";
 import { Form, InputNumber, Button, Card, message } from "antd";
 
 function TransferPanel() {
-  const { web3, connectToMetaMask } = useWeb3();
+  const { accounts, contract, connectToMetaMask } = useWeb3();
   let [refreshedAccounts, setRefreshedAccounts] = useState({
     refreshed: false,
     cb: null,
@@ -13,12 +13,10 @@ function TransferPanel() {
 
   const handleClick = async () => {
     setLoading(true);
-    setRefreshedAccounts({
-      refreshed: false,
-      cb: null,
-    });
     try {
-      await connectToMetaMask();
+      if (!contract) {
+        await connectToMetaMask();
+      }
       setRefreshedAccounts({
         refreshed: true,
         cb: confirmTransfer,
@@ -33,13 +31,17 @@ function TransferPanel() {
     }
   };
   useEffect(() => {
-    if (!refreshedAccounts.refreshed || !web3) {
+    if (!refreshedAccounts.refreshed || !contract || !accounts) {
       return;
     }
-    refreshedAccounts.cb(web3.contract, web3.accounts);
-  }, [refreshedAccounts, web3]);
+    refreshedAccounts.cb(contract, accounts);
+  }, [refreshedAccounts, contract, accounts]);
 
   const confirmTransfer = async (contract, accounts) => {
+    setRefreshedAccounts({
+      refreshed: false,
+      cb: null,
+    });
     try {
       await contract.methods
         .confirmTransfer(transferId)

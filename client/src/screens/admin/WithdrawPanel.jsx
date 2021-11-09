@@ -3,7 +3,7 @@ import { useWeb3 } from "../../hooks/web3";
 import { Button, Card, message } from "antd";
 
 function WithdrawPanel() {
-  const { web3, connectToMetaMask } = useWeb3();
+  const { accounts, contract, web3, connectToMetaMask } = useWeb3();
   let [refreshedAccounts, setRefreshedAccounts] = useState({
     refreshed: false,
     cb: null,
@@ -13,12 +13,10 @@ function WithdrawPanel() {
 
   const handleClick = async () => {
     setLoading(true);
-    setRefreshedAccounts({
-      refreshed: false,
-      cb: null,
-    });
     try {
-      await connectToMetaMask();
+      if (!contract) {
+        await connectToMetaMask();
+      }
       setRefreshedAccounts({
         refreshed: true,
         cb: withraw,
@@ -34,18 +32,16 @@ function WithdrawPanel() {
   };
 
   useEffect(() => {
-    if (!refreshedAccounts.refreshed || !web3) {
+    if (!refreshedAccounts.refreshed || !contract || !accounts) {
       return;
     }
-    refreshedAccounts.cb(web3.contract, web3.accounts);
-  }, [refreshedAccounts, web3]);
+    refreshedAccounts.cb(contract, accounts);
+  }, [refreshedAccounts, contract, accounts]);
 
   useEffect(() => {
     const getBalance = async (web3) => {
       try {
-        const balance = await web3.web3.eth.getBalance(
-          web3.contract.options.address
-        );
+        const balance = await web3.eth.getBalance(contract.options.address);
         setBalance(balance / 1e18);
       } catch (e) {
         console.error(e);
@@ -60,6 +56,10 @@ function WithdrawPanel() {
   });
 
   const withraw = async (contract, accounts) => {
+    setRefreshedAccounts({
+      refreshed: false,
+      cb: null,
+    });
     try {
       await contract.methods.withdraw().send({ from: accounts[0] });
       setLoading(false);
