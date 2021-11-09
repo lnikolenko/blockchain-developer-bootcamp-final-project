@@ -2,7 +2,7 @@
 This is a final project for Consensys Blockchain Developmer Bootcamp 2021. 
 ## Table of Contents
 - [About the Project](https://github.com/lnikolenko/blockchain-developer-bootcamp-final-project/blob/main/README.md#about-the-project)
-- Directory Structure
+- [Directory Structure](https://github.com/lnikolenko/blockchain-developer-bootcamp-final-project/blob/main/README.md#directory-structure)
 - Design Patterns and Avoiding Common Attacks
 - Installation
 - Deployment
@@ -32,4 +32,10 @@ Note, that there is also and Admin panel which you can only access from the cont
 ## Directory Structure
 The project was bootstrapped from [Truffle React](https://www.trufflesuite.com/boxes/react) box. The `client/` folder contains the frontend app, everything outside of this folder contains the smart contract code. Note, that the smart contract code has its own `package.json` and `node_modules/` for the smart contract's dependencies (which different from the ones inside of `client/`). There is also a `docs/` folder with the generated documentation (see more in the Documentation section). `test/` folder contain's smart contract's tests. 
 
-The most notable components of `client/src/` folder are`client/src/screens/` - the UI for the website, `client/src/hooks/` - hooks that manage the global state of the app, `client/src/contracts` - the ABI for the smart contract and dependencies and `client/src/components` - small UI pieces that are re-used across differnt views.
+The most notable components of `client/src/` folder are`client/src/screens/` - the UI for the website, `client/src/hooks/` - hooks that manage the global state of the app, `client/src/contracts` - the ABI for the smart contract and dependencies and `client/src/components` - small UI pieces that are re-used across different views.
+## Installation
+### Pre-requisites
+1. Install [Node.js](https://nodejs.org/en/download/)
+2. Install [Truffle](https://www.trufflesuite.com/docs/truffle/getting-started/installation)
+3. Optional - install [Ganache](https://www.trufflesuite.com/ganache) - you can use any blockchain emulator, but I will be using Ganache in the installation instructions. 
+### Smart Contract
