@@ -51,3 +51,14 @@ The most notable components of `client/src/` folder are`client/src/screens/` - t
 2. `npm i` - installs the dependencies for the fronted
 3. `npm run start`
 4. Go to `http://localhost:3000` in your browser. Admin panel is located at `http://localhost:3000/admin`
+## Deployment
+### Smart Contract
+The instructions are walking through the deployment of the contract to Ropsten via [Infura](https://infura.io/). 
+1. Create an `.env` file inside `blockchain-developer-bootcamp-final-project`. 
+2. Copy the contents of `.env.sample` to `.env` 
+3. Pick an address that is going to deploy the contract (and make sure that address has funds) and fill out its mnemonic in the `MNEMONIC` variable in the .env file. 
+4. Create an Infura account - follow [these](https://blog.infura.io/getting-started-with-infura-28e41844cc89/) directions up to and including Step 2. Then under endpoints you will see a URL of the format `https://<network>.infura.io/v3/YOUR-PROJECT-ID`. Select ROSTEN in the "Endpoints" dropdown if you are following along this example. Copy tha URL in the `INFURA_URL`variable. 
+5. In `blockchain-developer-bootcamp-final-project/truffle-config.js` uncomment lines 2 - 7 and 19-25. In this patricular case we will be deploying the contract to Ropsten, but it is fairly straightforward to deploy the contract to other Testnets or Mainnet. 
+6. Run `truffle migrate --network ropsten` 
+
+**DO NOT SHARE YOUR INFURA URL OR MNEMONIC OR COMMIT THEM TO VERSION CONTROL!**
