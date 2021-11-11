@@ -74,3 +74,9 @@ The instructions are walking through the deployment of the contract to Ropsten v
 #### Deployment Steps
 1. Push your changes to [web-app-deploy branch](https://github.com/lnikolenko/blockchain-developer-bootcamp-final-project/tree/web-app-deploy). This branch just mirros the contents of the `client/` folder without `package-lock.json`. 
 2. Deploy the [web-app-deploy branch](https://github.com/lnikolenko/blockchain-developer-bootcamp-final-project/tree/web-app-deploy)  in the Heroku pipeline UI. 
+
+## Documentation
+Run this command to generate the documntaion for the smart contract. The generated \*.md files wil appear in the `docs/` folder. 
+```
+npx solidity-docgen --solc-settings  "{remappings: ['@openzeppelin/contracts-ethereum-package=$PWD/node_modules/@openzeppelin/contracts-ethereum-package','@openzeppelin/upgrades=$PWD/node_modules/@openzeppelin/upgrades']}" 
+```
