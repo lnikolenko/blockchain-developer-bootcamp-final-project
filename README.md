@@ -54,6 +54,7 @@ The most notable components of `client/src/` folder are`client/src/screens/` - t
 3. `npm run start`
 4. Go to `http://localhost:3000` in your browser. Admin panel is located at `http://localhost:3000/admin`
 ## Deployment
+The web app (everyting inside the `client/`) folder and the smart contract (everyting EXCEPT the `client/` folder are deployed separately). 
 ### Smart Contract
 The instructions are walking through the deployment of the contract to Ropsten via [Infura](https://infura.io/). 
 1. Create an `.env` file inside `blockchain-developer-bootcamp-final-project`. 
@@ -64,3 +65,12 @@ The instructions are walking through the deployment of the contract to Ropsten v
 6. Run `truffle migrate --network ropsten` 
 
 **DO NOT SHARE YOUR INFURA URL OR MNEMONIC OR COMMIT THEM TO VERSION CONTROL!**
+
+### Web App
+#### Pre-requisites
+1. Create a [Heroku](https://heroku.com) account if you don't have one. 
+2. Create an app and a pipeline (see a video on [this page](https://www.heroku.com/flow)). 
+3. Connect this github repo to the pipeline. 
+#### Deployment Steps
+1. Push your changes to [web-app-deploy branch](https://github.com/lnikolenko/blockchain-developer-bootcamp-final-project/tree/web-app-deploy). This branch just mirros the contents of the `client/` folder without `package-lock.json`. 
+2. Deploy the [web-app-deploy branch](https://github.com/lnikolenko/blockchain-developer-bootcamp-final-project/tree/web-app-deploy)  in the Heroku pipeline UI. 
