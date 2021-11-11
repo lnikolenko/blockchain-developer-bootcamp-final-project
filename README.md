@@ -2,10 +2,10 @@
 This is a final project for Consensys Blockchain Developmer Bootcamp 2021. It is deployed on Ropsten at [0x6C9Ba1996215D403724973D27B06d4FF87605381](https://ropsten.etherscan.io/address/0x6C9Ba1996215D403724973D27B06d4FF87605381). 
 ## Table of Contents
 - [About the Project](#about-the-project)
-- [Directory Structure](https://github.com/lnikolenko/blockchain-developer-bootcamp-final-project/README.md#directory-structure)
+- [Directory Structure](#directory-structure)
 - Design Patterns and Avoiding Common Attacks
-- [Installation](https://github.com/lnikolenko/blockchain-developer-bootcamp-final-project/README.md#installation)
-- [Deployment](https://github.com/lnikolenko/blockchain-developer-bootcamp-final-project/README.md#deployment)
+- [Installation](#installation)
+- [Deployment](#deployment)
 - Documentation
 ## About the Project
 ### Problem Statement
