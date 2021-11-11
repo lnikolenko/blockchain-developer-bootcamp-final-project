@@ -10,6 +10,9 @@
     "react-scripts": "3.2.0",
     "web3": "^1.2.2"
   },
+  "engines": {
+    "node": "12.x"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
