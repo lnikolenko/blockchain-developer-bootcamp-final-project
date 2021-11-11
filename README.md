@@ -72,7 +72,7 @@ The instructions are walking through the deployment of the contract to Ropsten v
 2. Create an app and a pipeline (see a video on [this page](https://www.heroku.com/flow)). 
 3. Connect this github repo to the pipeline. 
 #### Deployment Steps
-1. Push your changes to [web-app-deploy branch](https://github.com/lnikolenko/blockchain-developer-bootcamp-final-project/tree/web-app-deploy). This branch just mirros the contents of the `client/` folder without `package-lock.json`. 
+1. Push your changes to [web-app-deploy branch](https://github.com/lnikolenko/blockchain-developer-bootcamp-final-project/tree/web-app-deploy). This branch just mirrors the contents of the `client/` folder without `package-lock.json`. 
 2. Deploy the [web-app-deploy branch](https://github.com/lnikolenko/blockchain-developer-bootcamp-final-project/tree/web-app-deploy)  in the Heroku pipeline UI. 
 
 ## Documentation
