@@ -38,7 +38,7 @@ The most notable components of `client/src/` folder are`client/src/screens/` - t
 1. Install [Node.js](https://nodejs.org/en/download/)
 2. Install [Truffle](https://www.trufflesuite.com/docs/truffle/getting-started/installation)
 3. Optional: install [Ganache](https://www.trufflesuite.com/ganache) - you can use any blockchain emulator, but I will be using Ganache in the installation instructions
-4. Install [MetaMask](https://metamask.io/)
+4. Install [MetaMask](https://metamask.io/) extension in your browser
 ### Smart Contract
 1. Start up a local blockchain. If you are using Ganache, create a new workspace with `blockchain-developer-bootcamp-final-project/truffle-config.js` project. See [this page](https://www.trufflesuite.com/docs/ganache/workspaces/creating-workspaces#creating-a-workspace-from-scratch) for step-by-step screenshots. 
 2. Connect MetaMask to your local blockhain, see directions [here](https://asifwaquar.com/connect-metamask-to-localhost/). RPC URL is http://127.0.0.1:7545, chain ID is 5777. Import the generated local accounts as needed. 
