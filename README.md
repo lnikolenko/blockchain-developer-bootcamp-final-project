@@ -3,8 +3,7 @@ This is a final project for Consensys Blockchain Developmer Bootcamp 2021. It is
 ## Table of Contents
 - [About the Project](#about-the-project)
 - [Directory Structure](#directory-structure)
-- Design Patterns and Avoiding Common Attacks
-- [Installation and testing](#installation)
+- [Installation and testing](#installation-and-testing)
 - [Deployment](#deployment)
 - Documentation
 ## About the Project
