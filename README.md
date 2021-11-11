@@ -4,7 +4,7 @@ This is a final project for Consensys Blockchain Developmer Bootcamp 2021. It is
 - [About the Project](#about-the-project)
 - [Directory Structure](#directory-structure)
 - Design Patterns and Avoiding Common Attacks
-- [Installation](#installation)
+- [Installation and testing](#installation)
 - [Deployment](#deployment)
 - Documentation
 ## About the Project
@@ -33,7 +33,7 @@ Note, that there is also and Admin panel which you can only access from the cont
 The project was bootstrapped from [Truffle React](https://www.trufflesuite.com/boxes/react) box. The `client/` folder contains the React frontend app, everything outside of this folder contains the smart contract code. Note, that the smart contract code has its own `package.json` and `node_modules/` for the smart contract's dependencies (which different from the ones inside of `client/`). There is also a `docs/` folder with the generated documentation (see more in the Documentation section). `test/` folder contain's smart contract's tests. 
 
 The most notable components of `client/src/` folder are`client/src/screens/` - the UI for the website, `client/src/hooks/` - hooks that manage the global state of the app, `client/src/contracts` - the ABI for the smart contract and dependencies and `client/src/components` - small UI pieces that are re-used across different views.
-## Installation
+## Installation and Testing
 ### Pre-requisites
 1. Install [Node.js](https://nodejs.org/en/download/)
 2. Install [Truffle](https://www.trufflesuite.com/docs/truffle/getting-started/installation)
@@ -44,7 +44,7 @@ The most notable components of `client/src/` folder are`client/src/screens/` - t
 2. Connect MetaMask to your local blockhain, see directions [here](https://asifwaquar.com/connect-metamask-to-localhost/). RPC URL is http://127.0.0.1:7545, chain ID is 5777. Import the generated local accounts as needed. 
 3. Clone this repo and `cd` into the cloned `blockchain-developer-bootcamp-final-project/`
 4. `npm i` - installs the contract dependencies
-5. `truffle migrate --reset` - will deploy `CryptoUnion.sol` onto the local blockchain make it available for use. 
+5. `truffle migrate --reset` - will deploy `CryptoUnion.sol` onto the local blockchain and make it available for use. 
 6. `truffle test` - run unit tests for the smart contract. 
 ### Frontend
 1. Clone this repo and `cd` into the cloned `blockchain-developer-bootcamp-final-project/client`
