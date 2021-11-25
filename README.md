@@ -1,11 +1,14 @@
 # Crypto Union
-This is a final project for Consensys Blockchain Developmer Bootcamp 2021. It is deployed on Ropsten at [0x6C9Ba1996215D403724973D27B06d4FF87605381](https://ropsten.etherscan.io/address/0x6C9Ba1996215D403724973D27B06d4FF87605381). 
+This is a final project for Consensys Blockchain Developmer Bootcamp 2021. You can access the web app at https://crypto-union.herokuapp.com/. The smart contract is deployed on Ropsten at [0x6C9Ba1996215D403724973D27B06d4FF87605381](https://ropsten.etherscan.io/address/0x6C9Ba1996215D403724973D27B06d4FF87605381).
+- [design pattern decisions](https://github.com/lnikolenko/blockchain-developer-bootcamp-final-project/blob/main/design_pattern_decisions.md)
+- [avoiding common attacks](https://github.com/lnikolenko/blockchain-developer-bootcamp-final-project/blob/main/avoiding_common_attacks.md)
+- [deployed address](https://github.com/lnikolenko/blockchain-developer-bootcamp-final-project/blob/main/deployed_address.txt)
 ## Table of Contents
 - [About the Project](#about-the-project)
 - [Directory Structure](#directory-structure)
 - [Installation and testing](#installation-and-testing)
 - [Deployment](#deployment)
-- Documentation
+- [Documentation](#documentation)
 ## About the Project
 ### Problem Statement
 Today it is very hard or impossible to send money transfers between certain countries (e.g. from Russia to US). Before the transfer goes through (*if it goes through*) you are required to fill out countless forms with high processing times. Using Western Union international money transfers is inconvenient as well, since you are subject to high commission fees and you can only send limited amounts of money. This project will attempt to solve this issue by enabling regular users to send money internationally with low commission (as opposed to [Ripple](https://ripple.com/), which uses a B2B model only).
@@ -51,6 +54,7 @@ The most notable components of `client/src/` folder are`client/src/screens/` - t
 3. `npm run start`
 4. Go to `http://localhost:3000` in your browser. Admin panel is located at `http://localhost:3000/admin`
 ## Deployment
+The web app (everyting inside the `client/`) folder and the smart contract (everyting EXCEPT the `client/` folder are deployed separately). 
 ### Smart Contract
 The instructions are walking through the deployment of the contract to Ropsten via [Infura](https://infura.io/). 
 1. Create an `.env` file inside `blockchain-developer-bootcamp-final-project`. 
@@ -61,3 +65,18 @@ The instructions are walking through the deployment of the contract to Ropsten v
 6. Run `truffle migrate --network ropsten` 
 
 **DO NOT SHARE YOUR INFURA URL OR MNEMONIC OR COMMIT THEM TO VERSION CONTROL!**
+
+### Web App
+#### Pre-requisites
+1. Create a [Heroku](https://heroku.com) account if you don't have one. 
+2. Create an app and a pipeline (see a video on [this page](https://www.heroku.com/flow)). 
+3. Connect this github repo to the pipeline. 
+#### Deployment Steps
+1. Push your changes to [web-app-deploy branch](https://github.com/lnikolenko/blockchain-developer-bootcamp-final-project/tree/web-app-deploy). This branch just mirrors the contents of the `client/` folder without `package-lock.json`. 
+2. Deploy the [web-app-deploy branch](https://github.com/lnikolenko/blockchain-developer-bootcamp-final-project/tree/web-app-deploy)  in the Heroku pipeline UI. 
+
+## Documentation
+Run this command to generate the documntaion for the smart contract. The generated \*.md files wil appear in the `docs/` folder. 
+```
+npx solidity-docgen --solc-settings  "{remappings: ['@openzeppelin/contracts-ethereum-package=$PWD/node_modules/@openzeppelin/contracts-ethereum-package','@openzeppelin/upgrades=$PWD/node_modules/@openzeppelin/upgrades']}" 
+```
