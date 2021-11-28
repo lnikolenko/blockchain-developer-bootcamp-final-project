@@ -23979,12 +23979,12 @@
         }
       },
       "links": {},
-      "address": "0x4F56c849c5f103EE1e700dE18Aac8e70cb4e266c",
-      "transactionHash": "0x3602365838c23ef83dd2455d77032283d18913af9b8a3f0d14a15a5c92d40a0d"
+      "address": "0x2bBCf48C391153c630cFB03FE1b1067633366dCd",
+      "transactionHash": "0x42f64a76686a1297833caada915b2b97f75c4880f34d7687f506a4dc4105b80a"
     }
   },
   "schemaVersion": "3.4.3",
-  "updatedAt": "2021-11-05T04:34:38.630Z",
+  "updatedAt": "2021-11-28T02:49:24.114Z",
   "networkType": "ethereum",
   "devdoc": {
     "author": "Nikki Nikolenko",
