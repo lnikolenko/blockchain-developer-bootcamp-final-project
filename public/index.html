@@ -27,6 +27,18 @@
     <title>React App</title>
   </head>
   <body>
+    <header>
+      <script>
+        var host =
+          "www.crypto-union.herokuapp.com" || "crypto-union.herokuapp.com";
+        if (
+          host == window.location.host &&
+          window.location.protocol != "https:"
+        ) {
+          window.location.protocol = "https";
+        }
+      </script>
+    </header>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
     <!--
