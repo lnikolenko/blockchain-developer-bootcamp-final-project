@@ -1,5 +1,6 @@
 # Crypto Union
-This is a final project for Consensys Blockchain Developmer Bootcamp 2021. You can access the web app at https://crypto-union.herokuapp.com/. The smart contract is deployed on Ropsten at [0x6C9Ba1996215D403724973D27B06d4FF87605381](https://ropsten.etherscan.io/address/0x6C9Ba1996215D403724973D27B06d4FF87605381).
+This is a final project for Consensys Blockchain Developmer Bootcamp 2021. You can access the web app at https://crypto-union.herokuapp.com/. The smart contract is deployed on Ropsten at [0x6C9Ba1996215D403724973D27B06d4FF87605381](https://ropsten.etherscan.io/address/0x6C9Ba1996215D403724973D27B06d4FF87605381). 
+[Here](https://drive.google.com/file/d/1bfSFt8QijuZ43yrzQ0zP2sri54UqGeFh/view?usp=sharing) is a screencast of me walking through the project. Feel free to download the video, if it is not loading in the browser.  
 
 **Note:** because I am using a free version of Heroku, the website might take a while to load or display an application error on the first load. Just refresh the page if that happens.
 - [design pattern decisions](https://github.com/lnikolenko/blockchain-developer-bootcamp-final-project/blob/main/design_pattern_decisions.md)
