@@ -29,10 +29,10 @@
   <body>
     <header>
       <script>
-        var host =
-          "www.crypto-union.herokuapp.com" || "crypto-union.herokuapp.com";
+        var host1 = "www.crypto-union.herokuapp.com";
+        var host2 = "crypto-union.herokuapp.com";
         if (
-          host == window.location.host &&
+          (host1 == window.location.host || host2 == window.location.host) &&
           window.location.protocol != "https:"
         ) {
           window.location.protocol = "https";
