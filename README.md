@@ -1,6 +1,6 @@
 # Crypto Union
 This is a final project for Consensys Blockchain Developmer Bootcamp 2021. You can access the web app at https://crypto-union.herokuapp.com/. The smart contract is deployed on Ropsten at [0x6C9Ba1996215D403724973D27B06d4FF87605381](https://ropsten.etherscan.io/address/0x6C9Ba1996215D403724973D27B06d4FF87605381). 
-[Here](https://drive.google.com/file/d/1bfSFt8QijuZ43yrzQ0zP2sri54UqGeFh/view?usp=sharing) is a screencast of me walking through the project. Feel free to download the video, if it is not loading in the browser.  
+[Here](https://drive.google.com/file/d/1bfSFt8QijuZ43yrzQ0zP2sri54UqGeFh/view?usp=sharing) is a screencast of me walking through the project. Feel free to download the video, if it is not loading in the browser. Here is my Ethereum wallet for the certificate 0xB1d1dE7bF93192737c5BF1ED6bb4cfbBdbE4B17a. 
 
 **Note:** because I am using a free version of Heroku, the website might take a while to load or display an application error on the first load. Just refresh the page if that happens.
 - [design pattern decisions](https://github.com/lnikolenko/blockchain-developer-bootcamp-final-project/blob/main/design_pattern_decisions.md)
@@ -35,10 +35,11 @@ Note, that there is also and Admin panel which you can only access from the cont
 - Pause/unpause the contract
 - Withdraw accumulated contract fees to the owner's account
 ## Directory Structure
-The project was bootstrapped from [Truffle React](https://www.trufflesuite.com/boxes/react) box. The `client/` folder contains the React frontend app, everything outside of this folder contains the smart contract code. Note, that the smart contract code has its own `package.json` and `node_modules/` for the smart contract's dependencies (which different from the ones inside of `client/`). There is also a `docs/` folder with the generated documentation (see more in the Documentation section). `test/` folder contain's smart contract's tests. 
+The project was bootstrapped from [Truffle React](https://www.trufflesuite.com/boxes/react) box. The `client/` folder contains the React frontend app, everything outside of this folder contains the smart contract code. `contract/` folder contains the smart contract itself and `migrations/` contains boilerplate code to migrate the smart contract to the blockchain. Note, that the smart contract code has its own `package.json` and `node_modules/` for the smart contract's dependencies (which are different from the ones inside of `client/`). There is also a `docs/` folder with the generated documentation (see more in the Documentation section). `test/` folder contain's smart contract's tests. 
 
 The most notable components of `client/src/` folder are`client/src/screens/` - the UI for the website, `client/src/hooks/` - hooks that manage the global state of the app, `client/src/contracts` - the ABI for the smart contract and dependencies and `client/src/components` - small UI pieces that are re-used across different views.
 ## Installation and Testing
+You will neeed to (1) spin up a local blockchain, (2) deploy the smart contract to the local blockchain and (3) start up the frontend locally. 
 ### Pre-requisites
 1. Install [Node.js](https://nodejs.org/en/download/)
 2. Install [Truffle](https://www.trufflesuite.com/docs/truffle/getting-started/installation)
@@ -52,7 +53,7 @@ The most notable components of `client/src/` folder are`client/src/screens/` - t
 5. `truffle migrate --reset` - will deploy `CryptoUnion.sol` onto the local blockchain and make it available for use. 
 6. `truffle test` - run unit tests for the smart contract. 
 ### Frontend
-1. Clone this repo and `cd` into the cloned `blockchain-developer-bootcamp-final-project/client`
+1. `cd` into the cloned `blockchain-developer-bootcamp-final-project/client`
 2. `npm i` - installs the dependencies for the fronted
 3. `npm run start`
 4. Go to `http://localhost:3000` in your browser. Admin panel is located at `http://localhost:3000/admin`
@@ -62,7 +63,7 @@ The web app (everyting inside the `client/`) folder and the smart contract (ever
 The instructions are walking through the deployment of the contract to Ropsten via [Infura](https://infura.io/). 
 1. Create an `.env` file inside `blockchain-developer-bootcamp-final-project`. 
 2. Copy the contents of `.env.sample` to `.env` 
-3. Pick an address that is going to deploy the contract (and make sure that address has funds) and fill out its mnemonic in the `MNEMONIC` variable in the .env file. 
+3. Pick an address that is going to deploy the contract (and make sure that address has funds) and fill out its mnemonic in the `MNEMONIC` variable in the .env file. [Here](https://faucet.ropsten.be/) is a link to a Ropsten faucet. 
 4. Create an Infura account - follow [these](https://blog.infura.io/getting-started-with-infura-28e41844cc89/) directions up to and including Step 2. Then under endpoints you will see a URL of the format `https://<network>.infura.io/v3/YOUR-PROJECT-ID`. Select ROSTEN in the "Endpoints" dropdown if you are following along this example. Copy tha URL in the `INFURA_URL`variable. 
 5. In `blockchain-developer-bootcamp-final-project/truffle-config.js` uncomment lines 2 - 7 and 19-25. In this patricular case we will be deploying the contract to Ropsten, but it is fairly straightforward to deploy the contract to other Testnets or Mainnet. 
 6. Run `truffle migrate --network ropsten` 
